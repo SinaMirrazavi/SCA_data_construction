@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 	const std::size_t num_results = Position2.rows();
 
 
-	MatrixXd Data_Complete(Theta2.rows()*5,1+1+1+Theta1.cols()+Theta2.cols());
+	MatrixXd Data_Complete(Theta2.rows()*Theta1.rows(),1+1+1+Theta1.cols()+Theta2.cols());
 	MatrixXd Complete_Collision(0,1+1+1+Theta1.cols()+Theta2.cols());
 	MatrixXd Complete_Neighbour(0,1+1+1+Theta1.cols()+Theta2.cols());
 	MatrixXd Data_With_out_collision(0,6);
