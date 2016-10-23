@@ -16,6 +16,30 @@ const char *Theta2_path="/home/sina/Dropbox/Sinas_stuff/Gaga & Borat Shared fold
 
 
 
+MatrixXd Pairwisedistance(MatrixXd A, MatrixXd B)
+{
+
+	MatrixXd result(A.rows(),B.rows());
+	VectorXd A_vector(A.cols());
+	VectorXd B_vector(B.cols());
+
+
+	for (int i=0;i<A.rows();i++)
+	{
+		A_vector=A.block(i,0,1,A.cols()).transpose();
+		for (int j=0;j<B.rows();j++)
+		{
+			B_vector=B.block(j,0,1,B.cols()).transpose();
+			result(i,j)=(A_vector-B_vector).norm();
+		}
+	}
+
+	return result;
+}
+
+
+
+
 
 
 int main(int argc, char** argv)
@@ -83,20 +107,18 @@ int main(int argc, char** argv)
 	VectorXd Collision(Theta2.rows());
 	VectorXd Joint_Robot1_colided(Theta2.rows());
 	VectorXd Joint_Robot2_colided(Theta2.rows());
-	MatrixXd query_pt_eigen(1,3);
-
+	MatrixXd query_pt_eigen(3,3);
+	MatrixXd result(3,Position2.rows());
 
 	int dummy_dimention=Position1.cols();
 
-	bool Not_colided=true;
-	int i_handle;
 	int joint_Robot1;
 	int joint_Robot2;
 	div_t divresult;
 	int N_colisions=0;
 	int N_neighbour_colisions=0;
 
-	double begin = ros::Time::now().nsec;
+	double begin=ros::Time::now().toNSec();
 	for (int i=0; i<Theta1.rows();i++)
 	{
 		cout<<"i "<<i<<" Out of "<<Theta1.rows() <<endl;
@@ -105,93 +127,38 @@ int main(int argc, char** argv)
 		Collision.setOnes();
 		Joint_Robot1_colided.setZero();
 		Joint_Robot2_colided.setZero();
-		std::cout << "knnSearch(nn="<<num_results<<"): \n";
-		for (int counter=0;counter<3;counter++)
+		std::cout << "Distance "<<num_results<<endl;
+		for (int j=0; j<Position11.cols();j++)
 		{
+			query_pt[j]=Position11(joint_Robot1,j);
+			query_pt_eigen(0,j)=Position11(joint_Robot1,j);
+			query_pt_eigen(1,j)=Position12(joint_Robot1,j);
+			query_pt_eigen(2,j)=Position13(joint_Robot1,j);
 
-			switch(counter)
+		}
+
+
+		result=Pairwisedistance(query_pt_eigen,Position2);
+		for (int ii=0;ii<result.cols();ii++)
+		{
+			divresult = div ((int)ii,(int)Theta2.rows());
+			for (int j=0;j<result.rows();j++)
 			{
-			case 0:
-				//		cout<<"query_pt ";
-				for (int j=0; j<Position11.cols();j++)
-				{
-					query_pt[j]=Position11(joint_Robot1,j);
-					query_pt_eigen(0,j)=Position11(joint_Robot1,j);
-					//		cout<<"| "<<query_pt[j]<<"| "<<endl;
-				}
-				break;
-			case 1:
-				//		cout<<"query_pt ";
-				for (int j=0; j<Position12.cols();j++)
-				{
-					query_pt[j]=Position12(joint_Robot1,j);
-					query_pt_eigen(0,j)=Position12(joint_Robot1,j);
-					//		cout<<"| "<<query_pt[j]<<"| "<<endl;
-				}
-				break;
-			case 2:
-				//		cout<<"query_pt ";
-				for (int j=0; j<Position13.cols();j++)
-				{
-					query_pt[j]=Position13(joint_Robot1,j);
-					query_pt_eigen(0,j)=Position13(joint_Robot1,j);
-					//		cout<<"| "<<query_pt[j]<<"| "<<endl;
-				}
-				break;
-			}
-
-
-//Result=query_pt_eigen*Position2;
-
-			typedef KDTreeEigenMatrixAdaptor< Eigen::Matrix<double,Dynamic,Dynamic> > my_kd_tree_t;
-			my_kd_tree_t mat_index(dummy_dimention, Position2, 20 );
-			mat_index.index->buildIndex();
-
-			std::vector<long unsigned int>   ret_indexes(num_results);
-			std::vector<double> 			 out_dists_sqr(num_results);
-			nanoflann::KNNResultSet<double> resultSet(num_results);
-			resultSet.init(&ret_indexes[0], &out_dists_sqr[0] );
-			mat_index.index->findNeighbors(resultSet, &query_pt[0], nanoflann::SearchParams(10));
-
-
-			i_handle=0;
-			Not_colided=true;
-			while ((Not_colided)&&(i_handle<num_results))
-			{
-				//	cout<<"ret_indexes[i_handle] "<<ret_indexes[i_handle]<<" i_handle "<<i_handle<<"out_dists_sqr[ret_indexes[i_handle]] "<<out_dists_sqr[i_handle]<<endl;
-				divresult = div ((int)ret_indexes[i_handle],(int)Theta2.rows());
-				if (out_dists_sqr[i_handle]<0.5)
+				if (result(j,ii)<0.5)
 				{
 					Collision(divresult.rem)=-1;
-					Joint_Robot1_colided(divresult.rem)=counter+1;
-					Joint_Robot2_colided(divresult.rem)=ret_indexes[i_handle]/Position21.rows()+1;
+					Joint_Robot1_colided(divresult.rem)=j+1;
+					Joint_Robot2_colided(divresult.rem)=ii/Theta2.rows()+1;
 				}
-				else if ((out_dists_sqr[i_handle]<0.75)&&(Collision(divresult.rem)==1))
+				else if ((result(j,ii)<0.75)&&(Collision(divresult.rem)==1))
 				{
 					Collision(divresult.rem)=0;
-					Joint_Robot1_colided(divresult.rem)=counter+1;
-					Joint_Robot2_colided(divresult.rem)=ret_indexes[i_handle]/Position21.rows()+1;
+					Joint_Robot1_colided(divresult.rem)=j+1;
+					Joint_Robot2_colided(divresult.rem)=ii/Theta2.rows()+1;
 				}
-				else
-
-				{
-					Not_colided=true;
-				}
-				i_handle=i_handle+1;
-
 			}
+		}
 
-			/*	for (int i=0;i<num_results;i++)
-			{
-				cout << "ret_index["<<i<<"]=" << ret_indexes[i] << " out_dist_sqr=" << out_dists_sqr[i]<<"  Position1  ";
-				cout<<query_pt[0]<<" "<<query_pt[1]<<" "<<query_pt[2]<<" Position2 ";
-				cout<<Position2(ret_indexes[i],0)<<" "<<Position2(ret_indexes[i],1)<<" "<<Position2(ret_indexes[i],2)<<" "<<endl;
-			}
-			 */		}
-
-		/*		cout<<"Colision "<<Colision<<endl;
-		cout<<"Joint_Robot1_colided "<<Joint_Robot1_colided<<endl;
-		cout<<"Joint_Robot2_colided "<<Joint_Robot2_colided<<endl;*/
 		for (int j=0; j<Theta2.rows();j++)
 		{
 			joint_Robot2=j;
@@ -206,7 +173,6 @@ int main(int argc, char** argv)
 			if (Collision(j)==-1)
 			{
 				N_colisions=N_colisions+1;
-		//		Complete_Collision.conservativeResize(Complete_Collision.rows()+1, Complete_Collision.cols());
 				if (Complete_Collision.rows()<=N_colisions)
 				{
 					Complete_Collision.conservativeResize(Complete_Collision.rows()+Theta2.rows(), Complete_Collision.cols());
@@ -225,8 +191,7 @@ int main(int argc, char** argv)
 			else if (Collision(j)==0)
 			{
 				N_neighbour_colisions=N_neighbour_colisions+1;
-		//		Complete_Neighbour.conservativeResize(Complete_Neighbour.rows()+1, Complete_Neighbour.cols());
-				if (Complete_Neighbour.rows()<=N_colisions)
+				if (Complete_Neighbour.rows()<=N_neighbour_colisions)
 				{
 					Complete_Neighbour.conservativeResize(Complete_Neighbour.rows()+Theta2.rows(), Complete_Neighbour.cols());
 
@@ -242,10 +207,9 @@ int main(int argc, char** argv)
 
 			}
 		}
-
 	}
-	double end =ros::Time::now().nsec;
-	cout<<" The time "<<(begin-end)/1000000<<endl;
+	double end=ros::Time::now().toNSec();
+	cout<<"Time1 "<<(end-begin)*1E-6<<endl;
 	Complete_Collision.conservativeResize(N_colisions, Complete_Collision.cols());
 	Complete_Neighbour.conservativeResize(N_neighbour_colisions, Complete_Neighbour.cols());
 
@@ -263,65 +227,6 @@ int main(int argc, char** argv)
 
 
 
-
-	/*
-	cout<<"First Step passed"<<endl;
-
-	for (int i=0;i<Data_RTK.RowSize();i++)
-	{
-		for (int j=0;j<Data_RTK.ColumnSize();j++)
-		{
-			Data_Complete(i,j)=Data_RTK(i,j);
-		}
-		if (Data_RTK(i,0)==0)
-		{
-			Data_With_out_collision.conservativeResize(Data_With_out_collision.rows()+1, Data_With_out_collision.cols());
-			Data_With_out_collision.row(Data_With_out_collision.rows()-1)=Data_Complete.block(i,3,1,6);
-		}
-		else
-		{
-			Data_With_collision.conservativeResize(Data_With_collision.rows()+1, Data_With_collision.cols());
-			Data_With_collision.row(Data_With_collision.rows()-1)=Data_Complete.block(i,3,1,6);
-
-		}
-	}
-
-
-	cout <<"The size of Data is "<< Data_Complete.rows()<<" * "<<Data_Complete.cols()<<endl;
-	cout <<"The size of Data with out collision is "<< Data_With_out_collision.rows()<<" * "<<Data_With_out_collision.cols()<<endl;
-	cout <<"The size of Data with collision is "<< Data_With_collision.rows()<<" * "<<Data_With_collision.cols()<<endl;
-
-	int dummy_dimention=Data_With_out_collision.cols();
-	int i=0;
-	for (int i=0; i<Data_With_out_collision.rows();i++)
-	{
-
-	std::vector<double> query_pt(dummy_dimention);
-
-	cout<<"query_pt ";
-	for (int j=0; j<Data_With_out_collision.cols();j++)
-	{
-		query_pt[j]=Data_With_collision(i,j);
-		cout<<"| "<<query_pt[j]<<"| "<<endl;
-	}
-
-	typedef KDTreeEigenMatrixAdaptor< Eigen::Matrix<double,Dynamic,Dynamic> > my_kd_tree_t;
-	my_kd_tree_t mat_index(dummy_dimention, Data_With_out_collision, 10 );
-	mat_index.index->buildIndex();
-
-	std::vector<long unsigned int>   ret_indexes(num_results);
-	std::vector<double> out_dists_sqr(num_results);
-	nanoflann::KNNResultSet<double> resultSet(num_results);
-	resultSet.init(&ret_indexes[0], &out_dists_sqr[0] );
-	mat_index.index->findNeighbors(resultSet, &query_pt[0], nanoflann::SearchParams(10));
-
-	std::cout << "knnSearch(nn="<<num_results<<"): \n";
-	for (int	 i=0;i<num_results;i++)
-		std::cout << "ret_index["<<i<<"]=" << ret_indexes[i] << " out_dist_sqr=" << out_dists_sqr[i] << endl;
-
-	}
-
-	 */
 
 
 	return 0;
