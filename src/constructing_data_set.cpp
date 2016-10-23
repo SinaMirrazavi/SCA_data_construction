@@ -20,7 +20,8 @@ const char *Theta2_path="/home/sina/Dropbox/Sinas_stuff/Gaga & Borat Shared fold
 
 int main(int argc, char** argv)
 {
-
+	ros::init(argc, argv, "data_manager");
+	ros::NodeHandle n;
 	/*
 	 * NOTE: The matrices should be N*D, where N is the number of the data points and D is the dimention
 	 *
@@ -82,6 +83,7 @@ int main(int argc, char** argv)
 	VectorXd Collision(Theta2.rows());
 	VectorXd Joint_Robot1_colided(Theta2.rows());
 	VectorXd Joint_Robot2_colided(Theta2.rows());
+	MatrixXd query_pt_eigen(1,3);
 
 
 	int dummy_dimention=Position1.cols();
@@ -91,6 +93,10 @@ int main(int argc, char** argv)
 	int joint_Robot1;
 	int joint_Robot2;
 	div_t divresult;
+	int N_colisions=0;
+	int N_neighbour_colisions=0;
+
+	double begin = ros::Time::now().nsec;
 	for (int i=0; i<Theta1.rows();i++)
 	{
 		cout<<"i "<<i<<" Out of "<<Theta1.rows() <<endl;
@@ -110,6 +116,7 @@ int main(int argc, char** argv)
 				for (int j=0; j<Position11.cols();j++)
 				{
 					query_pt[j]=Position11(joint_Robot1,j);
+					query_pt_eigen(0,j)=Position11(joint_Robot1,j);
 					//		cout<<"| "<<query_pt[j]<<"| "<<endl;
 				}
 				break;
@@ -118,6 +125,7 @@ int main(int argc, char** argv)
 				for (int j=0; j<Position12.cols();j++)
 				{
 					query_pt[j]=Position12(joint_Robot1,j);
+					query_pt_eigen(0,j)=Position12(joint_Robot1,j);
 					//		cout<<"| "<<query_pt[j]<<"| "<<endl;
 				}
 				break;
@@ -126,12 +134,14 @@ int main(int argc, char** argv)
 				for (int j=0; j<Position13.cols();j++)
 				{
 					query_pt[j]=Position13(joint_Robot1,j);
+					query_pt_eigen(0,j)=Position13(joint_Robot1,j);
 					//		cout<<"| "<<query_pt[j]<<"| "<<endl;
 				}
 				break;
 			}
 
 
+//Result=query_pt_eigen*Position2;
 
 			typedef KDTreeEigenMatrixAdaptor< Eigen::Matrix<double,Dynamic,Dynamic> > my_kd_tree_t;
 			my_kd_tree_t mat_index(dummy_dimention, Position2, 20 );
@@ -195,33 +205,49 @@ int main(int argc, char** argv)
 			}
 			if (Collision(j)==-1)
 			{
-				Complete_Collision.conservativeResize(Complete_Collision.rows()+1, Complete_Collision.cols());
-				Complete_Collision(Complete_Collision.rows()-1,1)=Joint_Robot1_colided(j);
-				Complete_Collision(Complete_Collision.rows()-1,2)=Joint_Robot2_colided(j);
-				Complete_Collision(Complete_Collision.rows()-1,0)=Collision(j);
+				N_colisions=N_colisions+1;
+		//		Complete_Collision.conservativeResize(Complete_Collision.rows()+1, Complete_Collision.cols());
+				if (Complete_Collision.rows()<=N_colisions)
+				{
+					Complete_Collision.conservativeResize(Complete_Collision.rows()+Theta2.rows(), Complete_Collision.cols());
+
+				}
+				Complete_Collision(N_colisions-1,1)=Joint_Robot1_colided(j);
+				Complete_Collision(N_colisions-1,2)=Joint_Robot2_colided(j);
+				Complete_Collision(N_colisions-1,0)=Collision(j);
 				for (int ii=0;ii<Theta1.cols() ;ii++)
 				{
-					Complete_Collision(Complete_Collision.rows()-1,3+ii)=Theta1(joint_Robot1,ii);
-					Complete_Collision(Complete_Collision.rows()-1,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
+					Complete_Collision(N_colisions-1,3+ii)=Theta1(joint_Robot1,ii);
+					Complete_Collision(N_colisions-1,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
 				}
 
 			}
 			else if (Collision(j)==0)
 			{
+				N_neighbour_colisions=N_neighbour_colisions+1;
+		//		Complete_Neighbour.conservativeResize(Complete_Neighbour.rows()+1, Complete_Neighbour.cols());
+				if (Complete_Neighbour.rows()<=N_colisions)
+				{
+					Complete_Neighbour.conservativeResize(Complete_Neighbour.rows()+Theta2.rows(), Complete_Neighbour.cols());
 
-				Complete_Neighbour.conservativeResize(Complete_Neighbour.rows()+1, Complete_Neighbour.cols());
-				Complete_Neighbour(Complete_Neighbour.rows()-1,1)=Joint_Robot1_colided(j);
-				Complete_Neighbour(Complete_Neighbour.rows()-1,2)=Joint_Robot2_colided(j);
-				Complete_Neighbour(Complete_Neighbour.rows()-1,0)=Collision(j);
+				}
+				Complete_Neighbour(N_neighbour_colisions-1,1)=Joint_Robot1_colided(j);
+				Complete_Neighbour(N_neighbour_colisions-1,2)=Joint_Robot2_colided(j);
+				Complete_Neighbour(N_neighbour_colisions-1,0)=Collision(j);
 				for (int ii=0;ii<Theta1.cols() ;ii++)
 				{
-					Complete_Neighbour(Complete_Neighbour.rows()-1,3+ii)=Theta1(joint_Robot1,ii);
-					Complete_Neighbour(Complete_Neighbour.rows()-1,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
+					Complete_Neighbour(N_neighbour_colisions-1,3+ii)=Theta1(joint_Robot1,ii);
+					Complete_Neighbour(N_neighbour_colisions-1,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
 				}
 
 			}
 		}
+
 	}
+	double end =ros::Time::now().nsec;
+	cout<<" The time "<<(begin-end)/1000000<<endl;
+	Complete_Collision.conservativeResize(N_colisions, Complete_Collision.cols());
+	Complete_Neighbour.conservativeResize(N_neighbour_colisions, Complete_Neighbour.cols());
 
 
 	std::ofstream file("/home/sina/Dropbox/Sinas_stuff/Gaga & Borat Shared folder/IJRR/IEEE/Testing_In_Simulation/Data_Complete.txt");
@@ -234,7 +260,7 @@ int main(int argc, char** argv)
 	file2<<Complete_Neighbour<<endl;
 
 
-	file.close();
+
 
 
 

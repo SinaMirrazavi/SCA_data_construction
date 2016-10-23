@@ -13,6 +13,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <ctime>
+#include "ros/ros.h"
 
 using namespace Eigen;
 using namespace std;
