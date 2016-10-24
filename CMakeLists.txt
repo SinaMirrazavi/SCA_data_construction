@@ -131,7 +131,9 @@ include_directories(
 # add_dependencies(constructing_data_set ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
- add_executable(analysing_data_set src/analysing_data_set.cpp include/analysing_data_set.h)
+FILE(GLOB theSourceFiles src/analysing_data_set.cpp src/mathlib_eigen_conversions.cpp)
+FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conversions.h)
+ add_executable(analysing_data_set ${theSourceFiles} ${theheaderFiles})
 
   add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h)
 

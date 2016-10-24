@@ -16,11 +16,13 @@
 #include <ctime>
 #include "ros/ros.h"
 
+#include "mathlib_eigen_conversions.h"
+
 using namespace Eigen;
 using namespace std;
 using namespace nanoflann;
 
-#define MAXBUFSIZE  ((int) 1e6)
+#define MAXBUFSIZE  ((int) 1e9)
 
 
 
