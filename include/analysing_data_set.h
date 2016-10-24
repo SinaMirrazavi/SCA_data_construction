@@ -3,28 +3,68 @@
 
 #include "eigen3/Eigen/Dense"
 
+#include "MathLib.h"
+
+#include </home/sina/nanoflann/include/nanoflann.hpp>
+
+
+#include <ctime>
+#include <cstdlib>
 #include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
 #include <fstream>
-#include <time.h>
 #include <string>
-#include <fstream>
-#include <math.h>
-
-#include "MathLib/MathLib.h"
-
-
-#include "sKinematics.h"
-#include "Gaussians.h"
-
+#include <ctime>
 #include "ros/ros.h"
 
 using namespace Eigen;
 using namespace std;
+using namespace nanoflann;
 
 #define MAXBUFSIZE  ((int) 1e6)
 
+
+
+
+
+MatrixXd readMatrix(const char *filename)
+    {
+    int cols = 0, rows = 0;
+    double buff[MAXBUFSIZE];
+
+    // Read numbers from file into buffer.
+    ifstream infile;
+    infile.open(filename);
+    while (! infile.eof())
+        {
+        string line;
+        getline(infile, line);
+
+        int temp_cols = 0;
+        stringstream stream(line);
+        while(! stream.eof())
+            stream >> buff[cols*rows+temp_cols++];
+
+        if (temp_cols == 0)
+            continue;
+
+        if (cols == 0)
+            cols = temp_cols;
+
+        rows++;
+        }
+
+    infile.close();
+
+    rows--;
+
+    // Populate matrix with numbers.
+    MatrixXd result(rows,cols);
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            result(i,j) = buff[ cols*i+j ];
+
+    return result;
+    };
 
 
 

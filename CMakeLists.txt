@@ -9,6 +9,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   mathlib
+  skinematics
+  sgaussians
 )
 
 ## System dependencies are found with CMake's conventions
@@ -129,17 +131,21 @@ include_directories(
 # add_dependencies(constructing_data_set ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
- add_executable(constructing_data_set_node src/constructing_data_set.cpp include/constructing_data_set.h)
+ add_executable(analysing_data_set src/analysing_data_set.cpp include/analysing_data_set.h)
+
+  add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(constructing_data_set_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(constructing_data_set_node
+ target_link_libraries(analysing_data_set
    ${catkin_LIBRARIES}
  )
-
+ target_link_libraries(constructing_data_set
+   ${catkin_LIBRARIES}
+ )
 #############
 ## Install ##
 #############

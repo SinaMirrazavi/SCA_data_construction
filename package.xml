@@ -52,6 +52,13 @@
 
   <build_depend> mathlib </build_depend>
   <run_depend> mathlib </run_depend>
+
+  <build_depend>skinematics</build_depend>
+  <build_depend>sgaussians</build_depend>
+
+    <run_depend>skinematics</run_depend>
+<run_depend>sgaussians</run_depend>
+
   
 
   <!-- The export tag contains other, unspecified, tags -->
