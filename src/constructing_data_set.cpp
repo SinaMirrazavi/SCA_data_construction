@@ -10,7 +10,7 @@ double Z_1=0;
 double X_2=0.0;
 double Y_2=-0.9;
 double Z_2=0.0;
-int resolution=1;
+int resolution=3;
 
 int main(int argc, char** argv)
 {
@@ -90,30 +90,34 @@ int main(int argc, char** argv)
 						KUKA_1.getEndPos(3,Position3.Array());
 						KUKA_1.getEndPos(4,Position4.Array());	Position4=(Position4+Position3)/2;
 						KUKA_1.getEndPos(5,Position5.Array());
-						count=count+1;
-						if (Theta1.rows()<=count)
+						if ((Position5(1)<Position1(1))&&(Position5(2)>Position1(2)))
 						{
-							Theta1.conservativeResize(Theta1.rows()+initial_size/10, Theta1.cols());
-							Position10.conservativeResize(Position10.rows()+initial_size/10, Position10.cols());
-							Position11.conservativeResize(Position11.rows()+initial_size/10, Position11.cols());
-							Position12.conservativeResize(Position12.rows()+initial_size/10, Position12.cols());
-							Position13.conservativeResize(Position13.rows()+initial_size/10, Position13.cols());
-							Position14.conservativeResize(Position14.rows()+initial_size/10, Position14.cols());
-							Position15.conservativeResize(Position15.rows()+initial_size/10, Position15.cols());
-							KUKA_1_Position.conservativeResize(KUKA_1_Position.rows()+initial_size/10, KUKA_1_Position.cols());
+							count=count+1;
+							if (Theta1.rows()<=count)
+							{
+								Theta1.conservativeResize(Theta1.rows()+initial_size/10, Theta1.cols());
+								Position10.conservativeResize(Position10.rows()+initial_size/10, Position10.cols());
+								Position11.conservativeResize(Position11.rows()+initial_size/10, Position11.cols());
+								Position12.conservativeResize(Position12.rows()+initial_size/10, Position12.cols());
+								Position13.conservativeResize(Position13.rows()+initial_size/10, Position13.cols());
+								Position14.conservativeResize(Position14.rows()+initial_size/10, Position14.cols());
+								Position15.conservativeResize(Position15.rows()+initial_size/10, Position15.cols());
+								KUKA_1_Position.conservativeResize(KUKA_1_Position.rows()+initial_size/10, KUKA_1_Position.cols());
 
+							}
+							Theta1(count-1,0)=JointPos(0);Theta1(count-1,1)=JointPos(1);Theta1(count-1,2)=JointPos(2);
+							Theta1(count-1,3)=JointPos(3);Theta1(count-1,4)=JointPos(4);Theta1(count-1,5)=JointPos(5);
+							Theta1(count-1,6)=JointPos(6);
+							Position10.row(count-1)<<Position0(0),Position0(1),Position0(2);
+							Position11.row(count-1)<<Position1(0),Position1(1),Position1(2);
+							Position12.row(count-1)<<Position2(0),Position2(1),Position2(2);
+							Position13.row(count-1)<<Position3(0),Position3(1),Position3(2);
+							Position14.row(count-1)<<Position4(0),Position4(1),Position4(2);
+							Position15.row(count-1)<<Position5(0),Position5(1),Position5(2);
+							KUKA_1_Position.row(count-1)<<Position10.row(count-1),Position11.row(count-1),Position12.row(count-1),
+									Position13.row(count-1),Position14.row(count-1),Position15.row(count-1),Theta1.row(count-1);
 						}
-						Theta1(count-1,0)=JointPos(0);Theta1(count-1,1)=JointPos(1);Theta1(count-1,2)=JointPos(2);
-						Theta1(count-1,3)=JointPos(3);Theta1(count-1,4)=JointPos(4);Theta1(count-1,5)=JointPos(5);
-						Theta1(count-1,6)=JointPos(6);
-						Position10.row(count-1)<<Position0(0),Position0(1),Position0(2);
-						Position11.row(count-1)<<Position1(0),Position1(1),Position1(2);
-						Position12.row(count-1)<<Position2(0),Position2(1),Position2(2);
-						Position13.row(count-1)<<Position3(0),Position3(1),Position3(2);
-						Position14.row(count-1)<<Position4(0),Position4(1),Position4(2);
-						Position15.row(count-1)<<Position5(0),Position5(1),Position5(2);
-						KUKA_1_Position.row(count-1)<<Position10.row(count-1),Position11.row(count-1),Position12.row(count-1),
-								Position13.row(count-1),Position14.row(count-1),Position15.row(count-1),Theta1.row(count-1);
+
 					}
 				}
 			}
@@ -139,7 +143,7 @@ int main(int argc, char** argv)
 
 	if (generate_data_second_robot)
 	{
-	/*
+		/*
 		 * NOTE: The matrices should be N*D, where N is the number of the data points and D is the dimention
 		 *
 		 * 	%% %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -210,30 +214,32 @@ int main(int argc, char** argv)
 						KUKA_2.getEndPos(3,Position3.Array());
 						KUKA_2.getEndPos(4,Position4.Array());	Position4=(Position4+Position3)/2;
 						KUKA_2.getEndPos(5,Position5.Array());
-						count=count+1;
-						if (Theta2.rows()<=count)
-						{
-							Theta2.conservativeResize(Theta2.rows()+initial_size/10, Theta2.cols());
-							Position20.conservativeResize(Position20.rows()+initial_size/10, Position20.cols());
-							Position21.conservativeResize(Position21.rows()+initial_size/10, Position21.cols());
-							Position22.conservativeResize(Position22.rows()+initial_size/10, Position22.cols());
-							Position23.conservativeResize(Position23.rows()+initial_size/10, Position23.cols());
-							Position24.conservativeResize(Position24.rows()+initial_size/10, Position24.cols());
-							Position25.conservativeResize(Position25.rows()+initial_size/10, Position25.cols());
-							KUKA_2_Position.conservativeResize(KUKA_2_Position.rows()+initial_size/10, KUKA_2_Position.cols());
+						if ((Position5(1)>Position1(1))&&(Position5(2)>Position1(2)))
+						{count=count+1;
+							if (Theta2.rows()<=count)
+							{
+								Theta2.conservativeResize(Theta2.rows()+initial_size/10, Theta2.cols());
+								Position20.conservativeResize(Position20.rows()+initial_size/10, Position20.cols());
+								Position21.conservativeResize(Position21.rows()+initial_size/10, Position21.cols());
+								Position22.conservativeResize(Position22.rows()+initial_size/10, Position22.cols());
+								Position23.conservativeResize(Position23.rows()+initial_size/10, Position23.cols());
+								Position24.conservativeResize(Position24.rows()+initial_size/10, Position24.cols());
+								Position25.conservativeResize(Position25.rows()+initial_size/10, Position25.cols());
+								KUKA_2_Position.conservativeResize(KUKA_2_Position.rows()+initial_size/10, KUKA_2_Position.cols());
 
+							}
+							Theta2(count-1,0)=JointPos(0);Theta2(count-1,1)=JointPos(1);Theta2(count-1,2)=JointPos(2);
+							Theta2(count-1,3)=JointPos(3);Theta2(count-1,4)=JointPos(4);Theta2(count-1,5)=JointPos(5);
+							Theta2(count-1,6)=JointPos(6);
+							Position20.row(count-1)<<Position0(0),Position0(1),Position0(2);
+							Position21.row(count-1)<<Position1(0),Position1(1),Position1(2);
+							Position22.row(count-1)<<Position2(0),Position2(1),Position2(2);
+							Position23.row(count-1)<<Position3(0),Position3(1),Position3(2);
+							Position24.row(count-1)<<Position4(0),Position4(1),Position4(2);
+							Position25.row(count-1)<<Position5(0),Position5(1),Position5(2);
+							KUKA_2_Position.row(count-1)<<Position20.row(count-1),Position21.row(count-1),Position22.row(count-1),
+									Position23.row(count-1),Position24.row(count-1),Position25.row(count-1),Theta2.row(count-1);
 						}
-						Theta2(count-1,0)=JointPos(0);Theta2(count-1,1)=JointPos(1);Theta2(count-1,2)=JointPos(2);
-						Theta2(count-1,3)=JointPos(3);Theta2(count-1,4)=JointPos(4);Theta2(count-1,5)=JointPos(5);
-						Theta2(count-1,6)=JointPos(6);
-						Position20.row(count-1)<<Position0(0),Position0(1),Position0(2);
-						Position21.row(count-1)<<Position1(0),Position1(1),Position1(2);
-						Position22.row(count-1)<<Position2(0),Position2(1),Position2(2);
-						Position23.row(count-1)<<Position3(0),Position3(1),Position3(2);
-						Position24.row(count-1)<<Position4(0),Position4(1),Position4(2);
-						Position25.row(count-1)<<Position5(0),Position5(1),Position5(2);
-						KUKA_2_Position.row(count-1)<<Position20.row(count-1),Position21.row(count-1),Position22.row(count-1),
-								Position23.row(count-1),Position24.row(count-1),Position25.row(count-1),Theta2.row(count-1);
 					}
 				}
 			}

@@ -109,6 +109,24 @@ int main(int argc, char** argv)
 	Theta2=M2E_m(Theta2_RTK).transpose();
 
 
+	Position10_RTK.Resize(0,0);
+	Position11_RTK.Resize(0,0);
+	Position12_RTK.Resize(0,0);
+	Position13_RTK.Resize(0,0);
+	Position14_RTK.Resize(0,0);
+	Position15_RTK.Resize(0,0);
+
+	Position20_RTK.Resize(0,0);
+	Position21_RTK.Resize(0,0);
+	Position22_RTK.Resize(0,0);
+	Position23_RTK.Resize(0,0);
+	Position24_RTK.Resize(0,0);
+	Position25_RTK.Resize(0,0);
+
+	Theta1_RTK.Resize(0,0);
+	Theta2_RTK.Resize(0,0);
+
+
 	cout <<"The size of theta1 is "<< Theta1.rows()<<" * "<<Theta1.cols()<<endl;
 	cout <<"The size of Theta2 is "<< Theta2.rows()<<" * "<<Theta2.cols()<<endl;
 	cout <<"The size of Position11 is "<< Position10.rows()<<" * "<<Position10.cols()<<endl;
@@ -154,20 +172,20 @@ int main(int argc, char** argv)
 	const std::size_t num_results = Position2.rows();
 
 
-	MatrixXd Data_Complete(Theta2.rows()*Theta1.rows(),1+1+1+Theta1.cols()+Theta2.cols());
-	MatrixXd Complete_Collision(0,1+1+1+Theta1.cols()+Theta2.cols());
-	MatrixXd Complete_Neighbour(0,1+1+1+Theta1.cols()+Theta2.cols());
+//	MatrixXf Data_Complete(Theta2.rows()*Theta1.rows(),1+1+1+Theta1.cols()+Theta2.cols());
+	MatrixXf Complete_Collision(Theta2.rows()*Theta1.rows()/10,1+1+1+Theta1.cols()+Theta2.cols());
+	MatrixXf Complete_Neighbour(Theta2.rows()*Theta1.rows()/10,1+1+1+Theta1.cols()+Theta2.cols());
 	VectorXd Collision(Theta2.rows());
 	VectorXd Joint_Robot1_colided(Theta2.rows());
 	VectorXd Joint_Robot2_colided(Theta2.rows());
 	MatrixXd query_pt_eigen(6,3);
 	MatrixXd result(3,Position2.rows());
 
-	MatrixXd Debug_position1_colided(0,6*3);
-	MatrixXd Debug_position2_colided(0,6*3);
+	MatrixXd Debug_position1_colided(Theta2.rows()*Theta1.rows()/10,6*3);
+	MatrixXd Debug_position2_colided(Theta2.rows()*Theta1.rows()/10,6*3);
 
-	MatrixXd Debug_position1_neighbour(0,6*3);
-	MatrixXd Debug_position2_neighbour(0,6*3);
+	MatrixXd Debug_position1_neighbour(Theta2.rows()*Theta1.rows()/10,6*3);
+	MatrixXd Debug_position2_neighbour(Theta2.rows()*Theta1.rows()/10,6*3);
 
 	int dummy_dimention=Position1.cols();
 
@@ -206,13 +224,13 @@ int main(int argc, char** argv)
 				divresult = div ((int)ii,(int)Theta2.rows());
 				for (int j=0;j<result.rows();j++)
 				{
-					if (result(j,ii)<0.3)
+					if (result(j,ii)<0.2)
 					{
 						Collision(divresult.rem)=-1;
 						Joint_Robot1_colided(divresult.rem)=j+1;
 						Joint_Robot2_colided(divresult.rem)=ii/Theta2.rows()+1;
 					}
-					else if ((result(j,ii)<0.45)&&(Collision(divresult.rem)==1))
+					else if ((result(j,ii)<0.30)&&(Collision(divresult.rem)==1))
 					{
 						Collision(divresult.rem)=0;
 						Joint_Robot1_colided(divresult.rem)=j+1;
@@ -224,22 +242,22 @@ int main(int argc, char** argv)
 			for (int j=0; j<Theta2.rows();j++)
 			{
 				joint_Robot2=j;
-				Data_Complete(i*(Theta1.rows())+j,1)=Joint_Robot1_colided(j);
-				Data_Complete(i*(Theta1.rows())+j,2)=Joint_Robot2_colided(j);
-				Data_Complete(i*(Theta1.rows())+j,0)=Collision(j);
-				for (int ii=0;ii<Theta1.cols() ;ii++)
+/*				Data_Complete(i*(Theta2.rows())+j,1)=Joint_Robot1_colided(j);
+				Data_Complete(i*(Theta2.rows())+j,2)=Joint_Robot2_colided(j);
+				Data_Complete(i*(Theta2.rows())+j,0)=Collision(j);
+				for (int ii=0;ii<Theta2.cols() ;ii++)
 				{
-					Data_Complete(i*(Theta1.rows())+j,3+ii)=Theta1(joint_Robot1,ii);
-					Data_Complete(i*(Theta1.rows())+j,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
-				}
+					Data_Complete(i*(Theta2.rows())+j,3+ii)=Theta1(joint_Robot1,ii);
+					Data_Complete(i*(Theta2.rows())+j,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
+				}*/
 				if (Collision(j)==-1)
 				{
 					N_colisions=N_colisions+1;
 					if (Complete_Collision.rows()<=N_colisions)
 					{
-						Complete_Collision.conservativeResize(Complete_Collision.rows()+60*Theta2.rows(), Complete_Collision.cols());
-						Debug_position1_colided.conservativeResize(Debug_position1_colided.rows()+60*Theta2.rows(), Debug_position1_colided.cols());
-						Debug_position2_colided.conservativeResize(Debug_position2_colided.rows()+60*Theta2.rows(), Debug_position2_colided.cols());
+						Complete_Collision.conservativeResize(Complete_Collision.rows()+Theta2.rows(), Complete_Collision.cols());
+						Debug_position1_colided.conservativeResize(Debug_position1_colided.rows()+Theta2.rows(), Debug_position1_colided.cols());
+						Debug_position2_colided.conservativeResize(Debug_position2_colided.rows()+Theta2.rows(), Debug_position2_colided.cols());
 					}
 					Complete_Collision(N_colisions-1,1)=Joint_Robot1_colided(j);
 					Complete_Collision(N_colisions-1,2)=Joint_Robot2_colided(j);
@@ -260,9 +278,9 @@ int main(int argc, char** argv)
 					N_neighbour_colisions=N_neighbour_colisions+1;
 					if (Complete_Neighbour.rows()<=N_neighbour_colisions)
 					{
-						Complete_Neighbour.conservativeResize(Complete_Neighbour.rows()+60*Theta2.rows(), Complete_Neighbour.cols());
-						Debug_position1_neighbour.conservativeResize(Debug_position1_neighbour.rows()+60*Theta2.rows(), Debug_position1_neighbour.cols());
-						Debug_position2_neighbour.conservativeResize(Debug_position2_neighbour.rows()+60*Theta2.rows(), Debug_position2_neighbour.cols());
+						Complete_Neighbour.conservativeResize(Complete_Neighbour.rows()+Theta2.rows(), Complete_Neighbour.cols());
+						Debug_position1_neighbour.conservativeResize(Debug_position1_neighbour.rows()+Theta2.rows(), Debug_position1_neighbour.cols());
+						Debug_position2_neighbour.conservativeResize(Debug_position2_neighbour.rows()+Theta2.rows(), Debug_position2_neighbour.cols());
 					}
 					Complete_Neighbour(N_neighbour_colisions-1,1)=Joint_Robot1_colided(j);
 					Complete_Neighbour(N_neighbour_colisions-1,2)=Joint_Robot2_colided(j);
@@ -298,9 +316,9 @@ int main(int argc, char** argv)
 		/*	Eigen::write_binary("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/dataData_Complete.dat",Data_Complete);
 		Eigen::write_binary("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/dataCollision_Complete.dat",Complete_Collision);
 		Eigen::write_binary("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/dataNeighbour_Complete.dat",Complete_Neighbour);*/
-		std::ofstream file("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Data_Complete.txt");
+	/*	std::ofstream file("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Data_Complete.txt");
 		cout<<"Data_Complete "<<endl;file<<Data_Complete<<endl;
-		std::ofstream file1("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Collision_Complete.txt");
+*/		std::ofstream file1("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Collision_Complete.txt");
 		file1<<Complete_Collision<<endl;
 		std::ofstream file2("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Debug_position1_colided.txt");
 		file2<<Debug_position1_colided<<endl;
