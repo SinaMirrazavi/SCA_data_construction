@@ -5,7 +5,6 @@
 
 #include "MathLib.h"
 
-#include </home/sina/nanoflann/include/nanoflann.hpp>
 
 
 #include <ctime>
@@ -20,7 +19,6 @@
 
 using namespace Eigen;
 using namespace std;
-using namespace nanoflann;
 
 #define MAXBUFSIZE  ((int) 1e9)
 

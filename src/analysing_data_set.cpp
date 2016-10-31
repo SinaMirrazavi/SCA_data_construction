@@ -24,6 +24,8 @@ const char *Theta2_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/D
 
 
 
+
+bool Save_complete_data_set=false;
 MatrixXd Pairwisedistance(MatrixXd A, MatrixXd B)
 {
 
@@ -44,9 +46,6 @@ MatrixXd Pairwisedistance(MatrixXd A, MatrixXd B)
 
 	return result;
 }
-
-
-
 
 
 
@@ -171,8 +170,11 @@ int main(int argc, char** argv)
 
 	const std::size_t num_results = Position2.rows();
 
-
-//	MatrixXf Data_Complete(Theta2.rows()*Theta1.rows(),1+1+1+Theta1.cols()+Theta2.cols());
+	MatrixXf Data_Complete(0,0);
+	if (Save_complete_data_set)
+	{
+		Data_Complete.resize(Theta2.rows()*Theta1.rows(),1+1+1+Theta1.cols()+Theta2.cols());
+	}
 	MatrixXf Complete_Collision(Theta2.rows()*Theta1.rows()/10,1+1+1+Theta1.cols()+Theta2.cols());
 	MatrixXf Complete_Neighbour(Theta2.rows()*Theta1.rows()/10,1+1+1+Theta1.cols()+Theta2.cols());
 	VectorXd Collision(Theta2.rows());
@@ -200,16 +202,15 @@ int main(int argc, char** argv)
 	{
 		if (ros::ok())
 		{
-			cout<<"i "<<i<<" Out of "<<Theta1.rows() <<endl;
+			cout<<"i "<<i<<" Out of "<<Theta1.rows()<<" N_neighbour_colisions "<<N_neighbour_colisions
+					<<" N_colisions "<<N_colisions<<endl;
 			joint_Robot1=i;
-			std::vector<double> query_pt(dummy_dimention);
 			Collision.setOnes();
 			Joint_Robot1_colided.setZero();
 			Joint_Robot2_colided.setZero();
 			std::cout << "Distance "<<num_results<<endl;
 			for (int j=0; j<Position11.cols();j++)
 			{
-				query_pt[j]=Position11(joint_Robot1,j);
 				query_pt_eigen(0,j)=Position10(joint_Robot1,j);
 				query_pt_eigen(1,j)=Position11(joint_Robot1,j);
 				query_pt_eigen(2,j)=Position12(joint_Robot1,j);
@@ -242,14 +243,17 @@ int main(int argc, char** argv)
 			for (int j=0; j<Theta2.rows();j++)
 			{
 				joint_Robot2=j;
-/*				Data_Complete(i*(Theta2.rows())+j,1)=Joint_Robot1_colided(j);
-				Data_Complete(i*(Theta2.rows())+j,2)=Joint_Robot2_colided(j);
-				Data_Complete(i*(Theta2.rows())+j,0)=Collision(j);
-				for (int ii=0;ii<Theta2.cols() ;ii++)
+				if (Save_complete_data_set)
 				{
-					Data_Complete(i*(Theta2.rows())+j,3+ii)=Theta1(joint_Robot1,ii);
-					Data_Complete(i*(Theta2.rows())+j,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
-				}*/
+					Data_Complete(i*(Theta2.rows())+j,1)=Joint_Robot1_colided(j);
+					Data_Complete(i*(Theta2.rows())+j,2)=Joint_Robot2_colided(j);
+					Data_Complete(i*(Theta2.rows())+j,0)=Collision(j);
+					for (int ii=0;ii<Theta2.cols() ;ii++)
+					{
+						Data_Complete(i*(Theta2.rows())+j,3+ii)=Theta1(joint_Robot1,ii);
+						Data_Complete(i*(Theta2.rows())+j,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
+					}
+				}
 				if (Collision(j)==-1)
 				{
 					N_colisions=N_colisions+1;
@@ -311,14 +315,21 @@ int main(int argc, char** argv)
 	Debug_position1_neighbour.conservativeResize(N_neighbour_colisions, Debug_position1_neighbour.cols());
 	Debug_position2_neighbour.conservativeResize(N_neighbour_colisions, Debug_position2_neighbour.cols());
 
+
+	/*			%% %%%%%%%%%%%%%%%%%%%%%%%%%%
+				%  Saving the results		%
+				%%%%%%%%%%%%%%%%%%%%%%%%%% %%			*/
 	if (ros::ok())
 	{
 		/*	Eigen::write_binary("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/dataData_Complete.dat",Data_Complete);
 		Eigen::write_binary("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/dataCollision_Complete.dat",Complete_Collision);
 		Eigen::write_binary("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/dataNeighbour_Complete.dat",Complete_Neighbour);*/
-	/*	std::ofstream file("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Data_Complete.txt");
-		cout<<"Data_Complete "<<endl;file<<Data_Complete<<endl;
-*/		std::ofstream file1("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Collision_Complete.txt");
+
+		if (Save_complete_data_set){
+			std::ofstream file("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Data_Complete.txt");
+			cout<<"Data_Complete "<<endl;file<<Data_Complete<<endl;
+		}
+		std::ofstream file1("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Collision_Complete.txt");
 		file1<<Complete_Collision<<endl;
 		std::ofstream file2("/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Debug_position1_colided.txt");
 		file2<<Debug_position1_colided<<endl;
