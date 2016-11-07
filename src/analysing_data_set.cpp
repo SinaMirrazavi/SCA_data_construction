@@ -231,7 +231,7 @@ int main(int argc, char** argv)
 						Joint_Robot1_colided(divresult.rem)=j+1;
 						Joint_Robot2_colided(divresult.rem)=ii/Theta2.rows()+1;
 					}
-					else if ((result(j,ii)<0.30)&&(Collision(divresult.rem)==1))
+					else if ((result(j,ii)<0.33)&&(result(j,ii)>0.31)&&(Collision(divresult.rem)==1))
 					{
 						Collision(divresult.rem)=0;
 						Joint_Robot1_colided(divresult.rem)=j+1;
@@ -259,9 +259,9 @@ int main(int argc, char** argv)
 					N_colisions=N_colisions+1;
 					if (Complete_Collision.rows()<=N_colisions)
 					{
-						Complete_Collision.conservativeResize(Complete_Collision.rows()+Theta2.rows(), Complete_Collision.cols());
-						Debug_position1_colided.conservativeResize(Debug_position1_colided.rows()+Theta2.rows(), Debug_position1_colided.cols());
-						Debug_position2_colided.conservativeResize(Debug_position2_colided.rows()+Theta2.rows(), Debug_position2_colided.cols());
+						Complete_Collision.conservativeResize(Complete_Collision.rows()+100*Theta2.rows(), Complete_Collision.cols());
+						Debug_position1_colided.conservativeResize(Debug_position1_colided.rows()+100*Theta2.rows(), Debug_position1_colided.cols());
+						Debug_position2_colided.conservativeResize(Debug_position2_colided.rows()+100*Theta2.rows(), Debug_position2_colided.cols());
 					}
 					Complete_Collision(N_colisions-1,1)=Joint_Robot1_colided(j);
 					Complete_Collision(N_colisions-1,2)=Joint_Robot2_colided(j);
@@ -282,9 +282,9 @@ int main(int argc, char** argv)
 					N_neighbour_colisions=N_neighbour_colisions+1;
 					if (Complete_Neighbour.rows()<=N_neighbour_colisions)
 					{
-						Complete_Neighbour.conservativeResize(Complete_Neighbour.rows()+Theta2.rows(), Complete_Neighbour.cols());
-						Debug_position1_neighbour.conservativeResize(Debug_position1_neighbour.rows()+Theta2.rows(), Debug_position1_neighbour.cols());
-						Debug_position2_neighbour.conservativeResize(Debug_position2_neighbour.rows()+Theta2.rows(), Debug_position2_neighbour.cols());
+						Complete_Neighbour.conservativeResize(Complete_Neighbour.rows()+100*Theta2.rows(), Complete_Neighbour.cols());
+						Debug_position1_neighbour.conservativeResize(Debug_position1_neighbour.rows()+100*Theta2.rows(), Debug_position1_neighbour.cols());
+						Debug_position2_neighbour.conservativeResize(Debug_position2_neighbour.rows()+100*Theta2.rows(), Debug_position2_neighbour.cols());
 					}
 					Complete_Neighbour(N_neighbour_colisions-1,1)=Joint_Robot1_colided(j);
 					Complete_Neighbour(N_neighbour_colisions-1,2)=Joint_Robot2_colided(j);

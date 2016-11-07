@@ -137,6 +137,8 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
 
   add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h)
 
+    add_executable(plot_on_robot src/plot_on_robot.cpp include/plot_on_robot.h)
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(constructing_data_set_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -146,6 +148,10 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
    ${catkin_LIBRARIES}
  )
  target_link_libraries(constructing_data_set
+   ${catkin_LIBRARIES}
+ )
+
+  target_link_libraries(plot_on_robot
    ${catkin_LIBRARIES}
  )
 #############

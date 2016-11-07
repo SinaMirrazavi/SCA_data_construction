@@ -73,8 +73,9 @@ int main(int argc, char** argv)
 			{
 				for (double Dq_2=KUKA_1.getMin(2);Dq_2<=KUKA_1.getMax(2);Dq_2=Dq_2+resolution*DEG2RAD(10.0))
 				{
-					for (double Dq_3=KUKA_1.getMin(3);Dq_3<=KUKA_1.getMax(2);Dq_3=Dq_3+resolution*DEG2RAD(10.0))
+					for (double Dq_3=KUKA_1.getMin(3);Dq_3<=KUKA_1.getMax(3);Dq_3=Dq_3+resolution*DEG2RAD(10.0))
 					{
+
 
 						JointPos(0)=Dq_0;
 						JointPos(1)=Dq_1;
@@ -197,7 +198,7 @@ int main(int argc, char** argv)
 			{
 				for (double Dq_2=KUKA_2.getMin(2);Dq_2<=KUKA_2.getMax(2);Dq_2=Dq_2+resolution*DEG2RAD(10.0))
 				{
-					for (double Dq_3=KUKA_2.getMin(3);Dq_3<=KUKA_2.getMax(2);Dq_3=Dq_3+resolution*DEG2RAD(10.0))
+					for (double Dq_3=KUKA_2.getMin(3);Dq_3<=KUKA_2.getMax(3);Dq_3=Dq_3+resolution*DEG2RAD(10.0))
 					{
 
 						JointPos(0)=Dq_0;
