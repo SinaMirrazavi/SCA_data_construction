@@ -12,6 +12,12 @@ find_package(catkin REQUIRED COMPONENTS
   skinematics
   sgaussians
 )
+find_package(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+  message(STATUS "OPENMP FOUND")
+  set(OpenMP_FLAGS ${OpenMP_CXX_FLAGS})  # or if you use C: ${OpenMP_C_FLAGS}
+  set(OpenMP_LIBS gomp)
+endif()
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -105,8 +111,8 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES constructing_data_set
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+#  CATKIN_DEPENDS 
+  DEPENDS OpenMP
 )
 
 ###########
@@ -134,10 +140,15 @@ include_directories(
 FILE(GLOB theSourceFiles src/analysing_data_set.cpp src/mathlib_eigen_conversions.cpp)
 FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conversions.h)
  add_executable(analysing_data_set ${theSourceFiles} ${theheaderFiles})
+    target_compile_options(analysing_data_set PRIVATE ${OpenMP_FLAGS})
+
 
   add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h)
+    target_compile_options(constructing_data_set PRIVATE ${OpenMP_FLAGS})
 
     add_executable(plot_on_robot src/plot_on_robot.cpp include/plot_on_robot.h)
+
+
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -145,14 +156,14 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(analysing_data_set
-   ${catkin_LIBRARIES}
+   ${catkin_LIBRARIES} ${OpenMP_FLAGS}
  )
  target_link_libraries(constructing_data_set
-   ${catkin_LIBRARIES}
+   ${catkin_LIBRARIES}  ${OpenMP_FLAGS}
  )
 
   target_link_libraries(plot_on_robot
-   ${catkin_LIBRARIES}
+   ${catkin_LIBRARIES} 
  )
 #############
 ## Install ##

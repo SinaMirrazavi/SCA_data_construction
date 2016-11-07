@@ -23,8 +23,6 @@ const char *Theta1_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/D
 const char *Theta2_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Theta2.txt";
 
 
-
-
 bool Save_complete_data_set=false;
 MatrixXd Pairwisedistance(MatrixXd A, MatrixXd B)
 {
@@ -32,20 +30,21 @@ MatrixXd Pairwisedistance(MatrixXd A, MatrixXd B)
 	MatrixXd result(A.rows(),B.rows());
 	VectorXd A_vector(A.cols());
 	VectorXd B_vector(B.cols());
-
-
-	for (int i=0;i<A.rows();i++)
+#pragma omp parallel num_threads(8)
 	{
-		A_vector=A.block(i,0,1,A.cols()).transpose();
-		for (int j=0;j<B.rows();j++)
+#pragma omp for
+		for (int i=0;i<A.rows();i++)
 		{
-			B_vector=B.block(j,0,1,B.cols()).transpose();
-			result(i,j)=(A_vector-B_vector).norm();
+			for (int j=0;j<B.rows();j++)
+			{
+				result(i,j)=(A.block(i,0,1,A.cols()).transpose()-B.block(j,0,1,B.cols()).transpose()).norm();
+			}
 		}
 	}
 
 	return result;
 }
+
 
 
 
@@ -181,7 +180,7 @@ int main(int argc, char** argv)
 	VectorXd Joint_Robot1_colided(Theta2.rows());
 	VectorXd Joint_Robot2_colided(Theta2.rows());
 	MatrixXd query_pt_eigen(6,3);
-	MatrixXd result(3,Position2.rows());
+	MatrixXd result(6,Position2.rows());
 
 	MatrixXd Debug_position1_colided(Theta2.rows()*Theta1.rows()/10,6*3);
 	MatrixXd Debug_position2_colided(Theta2.rows()*Theta1.rows()/10,6*3);
@@ -193,11 +192,32 @@ int main(int argc, char** argv)
 
 	int joint_Robot1;
 	int joint_Robot2;
-	div_t divresult;
+	//	div_t divresult;
 	int N_colisions=0;
 	int N_neighbour_colisions=0;
 
 	double begin=ros::Time::now().toNSec();
+
+	int nthreads, tid, procs, maxt, inpar, dynamic, nested;
+
+
+	/*		tid = omp_get_thread_num();
+		// Get environment information
+		procs = omp_get_num_procs();
+		nthreads = omp_get_num_threads();
+		maxt = omp_get_max_threads();
+		inpar = omp_in_parallel();
+		dynamic = omp_get_dynamic();
+		nested = omp_get_nested();
+
+		// Print environment information
+		printf("Number of processors = %d\n", procs);
+		printf("Number of threads = %d\n", nthreads);
+		printf("Max threads = %d\n", maxt);
+		printf("In parallel? = %d\n", inpar);
+		printf("Dynamic threads enabled? = %d\n", dynamic);
+		printf("Nested parallelism supported? = %d\n", nested);*/
+
 	for (int i=0; i<Theta1.rows();i++)
 	{
 		if (ros::ok())
@@ -220,22 +240,27 @@ int main(int argc, char** argv)
 
 			}
 			result=Pairwisedistance(query_pt_eigen,Position2);
-			for (int ii=0;ii<result.cols();ii++)
+
+#pragma omp parallel num_threads(8)
 			{
-				divresult = div ((int)ii,(int)Theta2.rows());
-				for (int j=0;j<result.rows();j++)
+#pragma omp for
+				for (int ii=0;ii<result.cols();ii++)
 				{
-					if (result(j,ii)<0.2)
+					//		divresult = div ((int)ii,(int)Theta2.rows());
+					for (int j=0;j<result.rows();j++)
 					{
-						Collision(divresult.rem)=-1;
-						Joint_Robot1_colided(divresult.rem)=j+1;
-						Joint_Robot2_colided(divresult.rem)=ii/Theta2.rows()+1;
-					}
-					else if ((result(j,ii)<0.33)&&(result(j,ii)>0.31)&&(Collision(divresult.rem)==1))
-					{
-						Collision(divresult.rem)=0;
-						Joint_Robot1_colided(divresult.rem)=j+1;
-						Joint_Robot2_colided(divresult.rem)=ii/Theta2.rows()+1;
+						if (result(j,ii)<0.2)
+						{
+							Collision(div ((int)ii,(int)Theta2.rows()).rem)=-1;
+							Joint_Robot1_colided(div ((int)ii,(int)Theta2.rows()).rem)=j+1;
+							Joint_Robot2_colided(div ((int)ii,(int)Theta2.rows()).rem)=ii/Theta2.rows()+1;
+						}
+						else if ((result(j,ii)<0.33)&&(result(j,ii)>0.31)&&(Collision(div ((int)ii,(int)Theta2.rows()).rem)==1))
+						{
+							Collision(div ((int)ii,(int)Theta2.rows()).rem)=0;
+							Joint_Robot1_colided(div ((int)ii,(int)Theta2.rows()).rem)=j+1;
+							Joint_Robot2_colided(div ((int)ii,(int)Theta2.rows()).rem)=ii/Theta2.rows()+1;
+						}
 					}
 				}
 			}
