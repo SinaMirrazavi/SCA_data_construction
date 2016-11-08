@@ -31,7 +31,7 @@ MatrixXd Pairwisedistance(MatrixXd A, MatrixXd B)
 }
 
 
-int Num_of_robots=2;
+int Num_of_robots=3;
 
 int main(int argc, char** argv)
 {
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
 			{
 				if (ros::ok())
 				{
-					cout<<"i "<<i<<" Out of "<<Theta1.rows()<<" N_neighbour_colisions "<<N_neighbour_colisions
+					cout<<"The first robot is"<<o<<" and the second robot is "<<oo<<". i "<<i<<" Out of "<<Theta1.rows()<<" N_neighbour_colisions "<<N_neighbour_colisions
 							<<" N_colisions "<<N_colisions<<endl;
 					joint_Robot1=i;
 					Collision.setOnes();
@@ -297,7 +297,7 @@ int main(int argc, char** argv)
 			}
 
 
-			buffer_path=addTwochar(folder_path,"/Data_Complete",o,oo);
+			buffer_path=addTwochar(folder_path,"/Complete_Collision",o,oo);
 			file.open(buffer_path.c_str()); cout<<"Complete_Collision "<<endl;file<<Complete_Collision<<endl;
 			file.close();
 

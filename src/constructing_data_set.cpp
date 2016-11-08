@@ -2,8 +2,8 @@
 
 
 
-int resolution=3;
-int Num_of_robots=2;
+int resolution=5;
+int Num_of_robots=3;
 
 
 
