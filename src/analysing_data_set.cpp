@@ -1,6 +1,7 @@
 #include <analysing_data_set.h>
-const int SAMPLES_DIM = 15;
 
+
+#include "common.h"
 
 const char *Collision_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/datacolision.txt";
 
@@ -9,6 +10,7 @@ const char *Theta2_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/D
 
 
 bool Save_complete_data_set=false;
+
 MatrixXd Pairwisedistance(MatrixXd A, MatrixXd B)
 {
 
@@ -31,7 +33,6 @@ MatrixXd Pairwisedistance(MatrixXd A, MatrixXd B)
 }
 
 
-int Num_of_robots=3;
 
 int main(int argc, char** argv)
 {
@@ -133,7 +134,6 @@ int main(int argc, char** argv)
 	{
 		for (int oo=o+1;oo<Num_of_robots;oo++)
 		{
-			cout<<"o "<<o<<" oo "<<oo<<endl;
 			Position1.resize(Position[o].rows(),Position[o].cols());	Position1=Position[o];
 			Position2.resize(Position[oo].rows(),Position[oo].cols());	Position2=Position[oo];
 			Theta1.resize(Theta[o].rows(),Theta[o].cols());				Theta1=Theta[o];
@@ -175,13 +175,12 @@ int main(int argc, char** argv)
 			{
 				if (ros::ok())
 				{
-					cout<<"The first robot is"<<o<<" and the second robot is "<<oo<<". i "<<i<<" Out of "<<Theta1.rows()<<" N_neighbour_colisions "<<N_neighbour_colisions
-							<<" N_colisions "<<N_colisions<<endl;
+					cout<<"The first robot is "<<o<<" and the second robot is "<<oo<<". i "<<i<<" Out of "<<Theta1.rows()<<" N_neighbour_colisions "<<N_neighbour_colisions
+							<<" N_colisions "<<N_colisions<<". Size of  the second robot is "<<num_results<<endl;
 					joint_Robot1=i;
 					Collision.setOnes();
 					Joint_Robot1_colided.setZero();
 					Joint_Robot2_colided.setZero();
-					std::cout << "Distance "<<num_results<<endl;
 					for (int j=0; j<Position_each_link[0][0].cols();j++)
 					{
 						query_pt_eigen(0,j)=Position_each_link[o][0](joint_Robot1,j);
@@ -301,12 +300,12 @@ int main(int argc, char** argv)
 			file.open(buffer_path.c_str()); cout<<"Complete_Collision "<<endl;file<<Complete_Collision<<endl;
 			file.close();
 
-			buffer_path=addTwochar(folder_path,"/Debug_position1_colided",o,oo);
-			file.open(buffer_path.c_str()); cout<<"Debug_position1_colided "<<endl;file<<Debug_position1_colided<<endl;
+			buffer_path=addTwochar(folder_path,"/position1_colided",o,oo);
+			file.open(buffer_path.c_str()); cout<<"position1_colided "<<endl;file<<Debug_position1_colided<<endl;
 			file.close();
 
-			buffer_path=addTwochar(folder_path,"/Debug_position2_colided",o,oo);
-			file.open(buffer_path.c_str()); cout<<"Debug_position2_colided "<<endl;file<<Debug_position2_colided<<endl;
+			buffer_path=addTwochar(folder_path,"/position2_colided",o,oo);
+			file.open(buffer_path.c_str()); cout<<"position2_colided "<<endl;file<<Debug_position2_colided<<endl;
 			file.close();
 
 			buffer_path=addTwochar(folder_path,"/Complete_Neighbour",o,oo);
@@ -317,8 +316,8 @@ int main(int argc, char** argv)
 			file.open(buffer_path.c_str()); cout<<"Debug_position1_neighbour "<<endl;file<<Debug_position1_neighbour<<endl;
 			file.close();
 
-			buffer_path=addTwochar(folder_path,"/Debug_position2_neighbour",o,oo);
-			file.open(buffer_path.c_str()); cout<<"Debug_position2_neighbour "<<endl;file<<Debug_position2_neighbour<<endl;
+			buffer_path=addTwochar(folder_path,"/position2_neighbour",o,oo);
+			file.open(buffer_path.c_str()); cout<<"position2_neighbour "<<endl;file<<Debug_position2_neighbour<<endl;
 			file.close();
 
 		}

@@ -1,9 +1,10 @@
 #include <constructing_data_set.h>
 
 
+#include "common.h"
 
-int resolution=5;
-int Num_of_robots=3;
+int resolution=3;
+
 
 
 

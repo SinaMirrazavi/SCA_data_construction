@@ -21,8 +21,8 @@
 
 #include "mathlib_eigen_conversions.h"
 
-const char *Positioncolided_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Collision_Complete.txt";
-const char *PositionNeighbour_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Neighbour_Complete.txt";
+const char *Positioncolided_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Complete_Collision01.txt";
+const char *PositionNeighbour_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Complete_Neighbour01.txt";
 ros::Publisher pub_command_pos_left;
 ros::Publisher pub_command_pos_right;
 ros::Subscriber 			sub_left_position;

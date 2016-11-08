@@ -128,7 +128,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(constructing_data_set
-#   src/constructing_data_set.cpp include/constructing_data_set.h
+#   src/constructing_data_set.cpp include/constructing_data_set.h include/common.h
 # )
 
 ## Add cmake target dependencies of the library
@@ -138,12 +138,12 @@ include_directories(
 
 ## Declare a C++ executable
 FILE(GLOB theSourceFiles src/analysing_data_set.cpp src/mathlib_eigen_conversions.cpp)
-FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conversions.h)
+FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conversions.h include/common.h)
  add_executable(analysing_data_set ${theSourceFiles} ${theheaderFiles})
     target_compile_options(analysing_data_set PRIVATE ${OpenMP_FLAGS})
 
 
-  add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h)
+  add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h include/common.h)
     target_compile_options(constructing_data_set PRIVATE ${OpenMP_FLAGS})
 
     add_executable(plot_on_robot src/plot_on_robot.cpp include/plot_on_robot.h)
