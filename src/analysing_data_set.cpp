@@ -137,7 +137,7 @@ int main(int argc, char** argv)
 			Position1.resize(Position[o].rows(),Position[o].cols());	Position1=Position[o];
 			Position2.resize(Position[oo].rows(),Position[oo].cols());	Position2=Position[oo];
 			Theta1.resize(Theta[o].rows(),Theta[o].cols());				Theta1=Theta[o];
-			Theta2.resize(Theta[oo].rows(),Theta[oo].cols());			Theta1=Theta[oo];
+			Theta2.resize(Theta[oo].rows(),Theta[oo].cols());			Theta2=Theta[oo];
 			cout <<"The size of Position1 is "<< Position1.rows()<<" * "<<Position1.cols()<<endl;
 			cout <<"The size of Position2 is "<< Position2.rows()<<" * "<<Position2.cols()<<endl;
 			cout <<"The size of Theta1 is "<< Theta1.rows()<<" * "<<Theta1.cols()<<endl;
