@@ -40,7 +40,7 @@ void read_binary(const char* filename, Matrix& matrix){
 	in.close();
 }
 }
-
+int KUKA_DOF=7;
 
 string addTwochar(string folder_path, string b, int integer1,int integer2=-1)
 {

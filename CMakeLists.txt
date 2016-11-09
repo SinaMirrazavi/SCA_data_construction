@@ -112,7 +112,7 @@ catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES constructing_data_set
 #  CATKIN_DEPENDS 
-  DEPENDS OpenMP
+  DEPENDS OpenMP mlpack
 )
 
 ###########
@@ -147,6 +147,9 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
     target_compile_options(constructing_data_set PRIVATE ${OpenMP_FLAGS})
 
     add_executable(plot_on_robot src/plot_on_robot.cpp include/plot_on_robot.h)
+  add_executable(Learning_the_workspaces src/Learning_the_workspaces.cpp include/Learning_the_workspaces.h)
+
+
 
 
 
@@ -163,6 +166,10 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
  )
 
   target_link_libraries(plot_on_robot
+   ${catkin_LIBRARIES} 
+ )
+
+    target_link_libraries(Learning_the_workspaces
    ${catkin_LIBRARIES} 
  )
 #############
