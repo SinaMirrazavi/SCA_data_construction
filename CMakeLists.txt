@@ -20,7 +20,7 @@ if(OPENMP_FOUND)
 endif()
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -98,7 +98,9 @@ endif()
 #   cfg/DynReconf1.cfg
 #   cfg/DynReconf2.cfg
 # )
-
+# check c++11 / c++0x
+include(CheckCXXCompilerFlag)
+set(CMAKE_CXX_FLAGS "-std=c++11")
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -112,7 +114,7 @@ catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES constructing_data_set
 #  CATKIN_DEPENDS 
-  DEPENDS OpenMP mlpack
+  DEPENDS OpenMP mlpack Boost
 )
 
 ###########
@@ -123,7 +125,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(include)
 include_directories(
-  ${catkin_INCLUDE_DIRS}
+ ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -169,8 +171,10 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
    ${catkin_LIBRARIES} 
  )
 
+
+
     target_link_libraries(Learning_the_workspaces
-   ${catkin_LIBRARIES} 
+   ${catkin_LIBRARIES}   /usr/local/lib/libmlpack.so.2 armadillo  /usr/lib/x86_64-linux-gnu/libboost_serialization.a
  )
 #############
 ## Install ##
