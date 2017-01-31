@@ -1,1 +1,10 @@
-- git: {local-name: sgaussians, uri: 'https://github.com/epfl-lasa/fast-gmm.git'}
+- git:
+    local-name: sgaussians
+    uri: https://github.com/epfl-lasa/fast-gmm.git
+- git:
+    local-name: robot-toolkit
+    uri: https://github.com/epfl-lasa/robot-toolkit
+- git:
+    local-name: skinematics
+    uri: https://github.com/epfl-lasa/robot-kinematics
+    
