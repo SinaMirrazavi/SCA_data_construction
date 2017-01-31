@@ -7,7 +7,7 @@ const char *Collision_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/sr
 
 const char *Theta1_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Theta0.txt";
 const char *Theta2_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Theta1.txt";
-
+ 
 
 bool Save_complete_data_set=false;
 
