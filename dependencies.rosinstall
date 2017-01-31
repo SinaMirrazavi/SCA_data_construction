@@ -7,4 +7,3 @@
 - git:
     local-name: skinematics
     uri: https://github.com/epfl-lasa/robot-kinematics
-    
