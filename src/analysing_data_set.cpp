@@ -312,8 +312,8 @@ int main(int argc, char** argv)
 			file.open(buffer_path.c_str()); cout<<"Complete_Neighbour "<<endl;file<<Complete_Neighbour<<endl;
 			file.close();
 
-			buffer_path=addTwochar(folder_path,"/Debug_position1_neighbour",o,oo);
-			file.open(buffer_path.c_str()); cout<<"Debug_position1_neighbour "<<endl;file<<Debug_position1_neighbour<<endl;
+			buffer_path=addTwochar(folder_path,"/position1_neighbour",o,oo);
+			file.open(buffer_path.c_str()); cout<<"position1_neighbour "<<endl;file<<Debug_position1_neighbour<<endl;
 			file.close();
 
 			buffer_path=addTwochar(folder_path,"/position2_neighbour",o,oo);

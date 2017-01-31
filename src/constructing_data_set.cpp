@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-int resolution=3;
+double resolution=9.0;
 
 
 
@@ -31,14 +31,14 @@ int main(int argc, char** argv)
 		%%%%%%%%%%%%%%%%%%%%%%%%%% %%			*/
 
 
-	Position_constraint_direction[0][0]=0;	Position_constraint_direction[0][1]=1;	Position_constraint_direction[0][2]=-1;
-	Position_constraint[0][0]=0.1;			Position_constraint[0][1]=0;			Position_constraint[0][2]=-0.34;
-	Position_base[0][0]=0;					Position_base[0][1]=0;					Position_base[0][2]=0;
+	Position_constraint_direction[0][0]=0;	Position_constraint_direction[0][1]=-1;	Position_constraint_direction[0][2]=-1;
+	Position_constraint[0][0]=0.1;			Position_constraint[0][1]=1.3;			Position_constraint[0][2]=-0.34;
+	Position_base[0][0]=0;					Position_base[0][1]=-1.3;					Position_base[0][2]=0.144383;
 	if (Num_of_robots>1)
 	{
-		Position_constraint_direction[1][0]=0;	Position_constraint_direction[1][1]=-1;	Position_constraint_direction[1][2]=-1;
-		Position_constraint[1][0]=0.1;			Position_constraint[1][1]=0.9;			Position_constraint[1][2]=-0.34;
-		Position_base[1][0]=0;					Position_base[1][1]=-0.9;				Position_base[1][2]=0;
+		Position_constraint_direction[1][0]=0;	Position_constraint_direction[1][1]=1;	Position_constraint_direction[1][2]=-1;
+		Position_constraint[1][0]=0.1;			Position_constraint[1][1]=0.0;			Position_constraint[1][2]=-0.34;
+		Position_base[1][0]=0;					Position_base[1][1]=0.0;				Position_base[1][2]=0;
 	}
 	if (Num_of_robots>2)
 	{
@@ -72,14 +72,31 @@ int main(int argc, char** argv)
 		 * 	%% %%%%%%%%%%%%%%%%%%%%%%%%%%
 			%  Constructing_the_robots 1%
 			%%%%%%%%%%%%%%%%%%%%%%%%%% %%			*/
-		KUKA[i]= new sKinematics(7, 1.0/500);
-		KUKA[i]->setDH(0,  0.0,  0.34, M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(98.0)*0.90);
-		KUKA[i]->setDH(1,  0.0,  0.00,-M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(98.0)*0.90);
-		KUKA[i]->setDH(2,  0.0,  0.40,-M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(100.0)*0.90);
-		KUKA[i]->setDH(3,  0.0,  0.00, M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(130.0)*0.90);
-		KUKA[i]->setDH(4,  0.0,  0.40, M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(140.0)*0.90);
-		KUKA[i]->setDH(5,  0.0,  0.00,-M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(180.0)*0.90); // reduced joint ang$
-		KUKA[i]->setDH(6,  0.0,  0.00, 0.0, 	 0.0, 1,  DEG2RAD(-175.), DEG2RAD(175.), DEG2RAD(180.0)*0.90); // reduced joint ang$
+		if (i==0)
+		{
+			KUKA[i] = new sKinematics(KUKA_DOF, 0.002);
+
+			KUKA[i]->setDH(0,  0.0,  0.36, M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(98.0));
+			KUKA[i]->setDH(1,  0.0,  0.00,-M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(98.0));
+			KUKA[i]->setDH(2,  0.0,  0.42,-M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(100.0));
+			KUKA[i]->setDH(3,  0.0,  0.00, M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(130.0));
+			KUKA[i]->setDH(4,  0.0,  0.40, M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(140.0));
+			KUKA[i]->setDH(5,  0.0,  0.00,-M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(180.0)); // reduced joint ang$
+			KUKA[i]->setDH(6,  0.00,  0.126+0.04, 0.0, 	 0.0, 1,  DEG2RAD(-175.), DEG2RAD(175.), DEG2RAD(180.0)); // reduced joint ang$
+
+		}
+		else if  (i==1)
+		{
+			KUKA[i] = new sKinematics(KUKA_DOF, 0.002);
+
+			KUKA[i]->setDH(0,  0.0,  0.34, M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(98.0));
+			KUKA[i]->setDH(1,  0.0,  0.00,-M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(98.0));
+			KUKA[i]->setDH(2,  0.0,  0.40,-M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(100.0));
+			KUKA[i]->setDH(3,  0.0,  0.00, M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(130.0));
+			KUKA[i]->setDH(4,  0.0,  0.40, M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(140.0));
+			KUKA[i]->setDH(5,  0.0,  0.00,-M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(180.0)); // reduced joint ang$
+			KUKA[i]->setDH(6,  0.00,  0.126+0.04, 0.0, 	 0.0, 1,  DEG2RAD(-175.), DEG2RAD(175.), DEG2RAD(180.0)); // reduced joint ang$
+		}
 
 		double T0_1[4][4];
 		for(int ii=0; ii<4; ii++)
@@ -120,7 +137,6 @@ int main(int argc, char** argv)
 				{
 					for (double Dq_3=KUKA[i]->getMin(3);Dq_3<=KUKA[i]->getMax(3);Dq_3=Dq_3+resolution*DEG2RAD(10.0))
 					{
-
 						JointPos(0)=Dq_0;
 						JointPos(1)=Dq_1;
 						JointPos(2)=Dq_2;
@@ -129,6 +145,8 @@ int main(int argc, char** argv)
 						JointPos(5)=0.0;
 						JointPos(6)=0.0;
 						KUKA[i]->setJoints(JointPos.Array());
+
+
 						for(int j=0;j<6;j++)
 						{
 							KUKA[i]->getEndPos(j,Position_each_link[j]);

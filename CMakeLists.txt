@@ -114,7 +114,7 @@ catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES constructing_data_set
 #  CATKIN_DEPENDS 
-  DEPENDS OpenMP mlpack Boost
+  DEPENDS OpenMP Boost
 )
 
 ###########
