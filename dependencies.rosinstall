@@ -1,0 +1,3 @@
+- git:
+    local-name: sgaussians
+	uri: https://github.com/epfl-lasa/fast-gmm.git
