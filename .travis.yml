@@ -116,7 +116,7 @@ script:
   - cd src/robot-toolkit
  # - tar -xvzf minimal.tgz
   - cd ../..
-  - sudo add-apt-repository ppa:titas-chanda/armadillo
+  - sudo add-apt-repository ppa:titas-chanda/armadillo -y
   - sudo apt-get update
   - sudo apt-get install libmlpack-dev
   - sudo apt-get install libarmadillo-dev
