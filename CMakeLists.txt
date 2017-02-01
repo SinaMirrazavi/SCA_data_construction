@@ -149,7 +149,7 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
   add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h include/common.h)
     target_compile_options(constructing_data_set PRIVATE ${OpenMP_FLAGS})
 
- #   add_executable(plot_on_robot src/plot_on_robot.cpp include/plot_on_robot.h)
+   add_executable(plot_on_robot src/plot_on_robot.cpp include/plot_on_robot.h)
  #add_executable(Learning_the_workspaces src/Learning_the_workspaces.cpp include/Learning_the_workspaces.h)
 
 
@@ -168,9 +168,9 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
    ${catkin_LIBRARIES}  ${OpenMP_FLAGS}
  )
 
-#  target_link_libraries(plot_on_robot
-#   ${catkin_LIBRARIES} 
-# )
+  target_link_libraries(plot_on_robot
+   ${catkin_LIBRARIES} 
+)
 
 
 
