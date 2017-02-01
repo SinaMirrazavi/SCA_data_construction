@@ -12,7 +12,7 @@
 #include <time.h>
 #include <string>
 #include <fstream>
-#include <math.h>
+//#include <math.h>
 #include  <omp.h>
 
 #include "MathLib/MathLib.h"

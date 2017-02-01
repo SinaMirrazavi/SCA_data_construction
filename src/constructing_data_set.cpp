@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-double resolution=9.0;
+double resolution=2.2;
 
 
  
