@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   mathlib
   skinematics
   sgaussians
-  kuka_interface_package
+  kuka_fri_bridge
 )
 find_package(OpenMP REQUIRED)
 if(OPENMP_FOUND)
