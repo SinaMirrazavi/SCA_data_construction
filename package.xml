@@ -59,8 +59,6 @@
     <build_depend> kuka_interface_package </build_depend>
   <run_depend> kuka_interface_package </run_depend>
   
-    <build_depend> mathlib </build_depend>
-  <run_depend> mathlib </run_depend>
 
   
 
