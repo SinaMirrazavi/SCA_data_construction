@@ -116,6 +116,8 @@ script:
   - cd src/robot-toolkit
  # - tar -xvzf minimal.tgz
   - cd ../..
+  - sudo add-apt-repository ppa:titas-chanda/armadillo
+  - sudo apt-get update
   - sudo apt-get install libmlpack-dev
   - sudo apt-get install libarmadillo-dev
   - sudo apt-get install ros-indigo-pr2-mechanism-model ros-indigo-pr2-controller-manager ros-indigo-control-toolbox ros-indigo-pr2-mechanism-controllers
