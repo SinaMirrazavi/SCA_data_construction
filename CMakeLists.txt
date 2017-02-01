@@ -174,9 +174,9 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
 
 
 
-    target_link_libraries(Learning_the_workspaces
-   ${catkin_LIBRARIES}   /usr/local/lib/libmlpack.so.2 armadillo  /usr/lib/x86_64-linux-gnu/libboost_serialization.a
- )
+#    target_link_libraries(Learning_the_workspaces
+#   ${catkin_LIBRARIES}   /usr/local/lib/libmlpack.so.2 armadillo  /usr/lib/x86_64-linux-gnu/libboost_serialization.a
+# )
 #############
 ## Install ##
 #############
