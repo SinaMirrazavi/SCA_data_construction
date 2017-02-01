@@ -15,7 +15,7 @@ and the corresponding video here:
   
   KUKA FRI bridge (https://github.com/nbfigueroa/kuka_interface_packages) (Actually, you don't need it if you only want to generate the SCA data-set. This package is used  to vitualize the motion of the robots in plot_on_robot.cpp)
   
-  Mlpack  (https://github.com/mlpack/mlpack) (Actually, you don't need it if you only want to generate the SCA data-set. This package is used to construct a probabilistic model for the reachable workspace of each robot. I prefer Matlab for doing this.)
+  Mlpack  (https://github.com/mlpack/mlpack) (Actually, you don't need it if you only want to generate the SCA data-set. This package is used to construct a probabilistic model for the reachable workspace of each robot. I prefer Matlab for doing this. The matlab code is also included in this package.)
   
   
  # Features:
@@ -70,4 +70,5 @@ Open [Learning_the_workspaces.cpp](https://github.com/sinamr66/SCA_data_construc
 rosrun  constructing_data_set Learning_the_workspaces
 ```  
 
+Open Matlab and run [Learning_Workspace.m](https://github.com/sinamr66/SCA_data_construction/blob/master/models/Learning_Workspace.m)
 For more information contact Sina Mirrazavi.
