@@ -18,7 +18,7 @@ and the corresponding video here:
   Mlpack  (https://github.com/mlpack/mlpack) (Actually, you don't need it if you only want to generate the SCA data-set. This package is used to construct a probabilistic model for the reachable workspace of each robot. I prefer Matlab for doing this. The matlab code is also included in this package.)
   
   
- # Features:
+# Features:
 - Generating the data for self-collision boundary for two or more arms.
 
 - Vitalizing the robot configurations on the Rviz simulator.
