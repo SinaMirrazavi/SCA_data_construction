@@ -114,7 +114,7 @@ script:
   - rospack profile
   - cd ~/catkin_ws
   - cd src/robot-toolkit
- # - tar -xvzf minimal.tgz
+  - tar -xvzf minimal.tgz
   - cd ../..
   - sudo add-apt-repository ppa:titas-chanda/armadillo -y
   - sudo apt-get update
