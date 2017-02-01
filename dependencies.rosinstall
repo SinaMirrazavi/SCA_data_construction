@@ -1,3 +1,6 @@
 - git: {local-name: robot-toolkit, uri: 'https://github.com/epfl-lasa/robot-toolkit'}
 - git: {local-name: sgaussians, uri: 'https://github.com/epfl-lasa/fast-gmm.git'}
 - git: {local-name: skinematics, uri: 'https://github.com/epfl-lasa/robot-kinematics'}
+- git: {local-name: kuka_interface_package, uri: 'https://github.com/epfl-lasa/kuka_interface_packages.git'}
+- git: {local-name: motion-generators, uri: 'https://github.com/epfl-lasa/motion-generators.git'}
+- git: {local-name: kuka-rviz-simulation, uri: 'https://github.com/epfl-lasa/kuka-rviz-simulation'}
