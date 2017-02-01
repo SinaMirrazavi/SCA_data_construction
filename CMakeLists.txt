@@ -142,12 +142,12 @@ include_directories(
 ## Declare a C++ executable
 FILE(GLOB theSourceFiles src/analysing_data_set.cpp src/mathlib_eigen_conversions.cpp)
 FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conversions.h include/common.h)
- #add_executable(analysing_data_set ${theSourceFiles} ${theheaderFiles})
-  #  target_compile_options(analysing_data_set PRIVATE ${OpenMP_FLAGS})
+ add_executable(analysing_data_set ${theSourceFiles} ${theheaderFiles})
+    target_compile_options(analysing_data_set PRIVATE ${OpenMP_FLAGS})
 
 
- # add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h include/common.h)
-  #  target_compile_options(constructing_data_set PRIVATE ${OpenMP_FLAGS})
+  add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h include/common.h)
+    target_compile_options(constructing_data_set PRIVATE ${OpenMP_FLAGS})
 
  #   add_executable(plot_on_robot src/plot_on_robot.cpp include/plot_on_robot.h)
  #add_executable(Learning_the_workspaces src/Learning_the_workspaces.cpp include/Learning_the_workspaces.h)
@@ -161,12 +161,12 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
 # add_dependencies(constructing_data_set_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
- #target_link_libraries(analysing_data_set
-  # ${catkin_LIBRARIES} ${OpenMP_FLAGS}
- #)
- #target_link_libraries(constructing_data_set
- #  ${catkin_LIBRARIES}  ${OpenMP_FLAGS}
- #)
+ target_link_libraries(analysing_data_set
+  ${catkin_LIBRARIES} ${OpenMP_FLAGS}
+ )
+ target_link_libraries(constructing_data_set
+   ${catkin_LIBRARIES}  ${OpenMP_FLAGS}
+ )
 
 #  target_link_libraries(plot_on_robot
 #   ${catkin_LIBRARIES} 
