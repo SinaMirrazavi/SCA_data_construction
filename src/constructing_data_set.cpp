@@ -20,10 +20,10 @@
 
 #include "common.h"
 
-double resolution=2.2;
+double resolution=1;
 
 
- 
+
 
 
 int main(int argc, char** argv)
@@ -49,12 +49,12 @@ int main(int argc, char** argv)
 
 
 	Position_constraint_direction[0][0]=0;	Position_constraint_direction[0][1]=-1;	Position_constraint_direction[0][2]=-1;
-	Position_constraint[0][0]=0.1;			Position_constraint[0][1]=1.3;			Position_constraint[0][2]=-0.34;
-	Position_base[0][0]=0;					Position_base[0][1]=-1.3;					Position_base[0][2]=0.144383;
+	Position_constraint[0][0]=0.1;			Position_constraint[0][1]=1.4;			Position_constraint[0][2]=-0.34-0.144383;
+	Position_base[0][0]=0;					Position_base[0][1]=-1.3;				Position_base[0][2]=0.144383;
 	if (Num_of_robots>1)
 	{
 		Position_constraint_direction[1][0]=0;	Position_constraint_direction[1][1]=1;	Position_constraint_direction[1][2]=-1;
-		Position_constraint[1][0]=0.1;			Position_constraint[1][1]=0.0;			Position_constraint[1][2]=-0.34;
+		Position_constraint[1][0]=0.1;			Position_constraint[1][1]=0.1;			Position_constraint[1][2]=-0.34;
 		Position_base[1][0]=0;					Position_base[1][1]=0.0;				Position_base[1][2]=0;
 	}
 	if (Num_of_robots>2)
@@ -99,7 +99,7 @@ int main(int argc, char** argv)
 			KUKA[i]->setDH(3,  0.0,  0.00, M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(130.0));
 			KUKA[i]->setDH(4,  0.0,  0.40, M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(140.0));
 			KUKA[i]->setDH(5,  0.0,  0.00,-M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(180.0)); // reduced joint ang$
-			KUKA[i]->setDH(6,  0.00,  0.126+0.04, 0.0, 	 0.0, 1,  DEG2RAD(-175.), DEG2RAD(175.), DEG2RAD(180.0)); // reduced joint ang$
+			KUKA[i]->setDH(6,  0.00,  0.196+0.1, 0.0, 	 0.0, 1,  DEG2RAD(-175.), DEG2RAD(175.), DEG2RAD(180.0)); // reduced joint ang$
 
 		}
 		else if  (i==1)
@@ -112,7 +112,7 @@ int main(int argc, char** argv)
 			KUKA[i]->setDH(3,  0.0,  0.00, M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(130.0));
 			KUKA[i]->setDH(4,  0.0,  0.40, M_PI_2, 0.0, 1,  DEG2RAD(-170.), DEG2RAD(170.), DEG2RAD(140.0));
 			KUKA[i]->setDH(5,  0.0,  0.00,-M_PI_2, 0.0, 1,  DEG2RAD(-120.), DEG2RAD(120.), DEG2RAD(180.0)); // reduced joint ang$
-			KUKA[i]->setDH(6,  0.00,  0.126+0.04, 0.0, 	 0.0, 1,  DEG2RAD(-175.), DEG2RAD(175.), DEG2RAD(180.0)); // reduced joint ang$
+			KUKA[i]->setDH(6,  0.00,   0.126+0.11+0.1, 0.0, 	 0.0, 1,  DEG2RAD(-175.), DEG2RAD(175.), DEG2RAD(180.0)); // reduced joint ang$
 		}
 
 		double T0_1[4][4];
@@ -154,57 +154,64 @@ int main(int argc, char** argv)
 				{
 					for (double Dq_3=KUKA[i]->getMin(3);Dq_3<=KUKA[i]->getMax(3);Dq_3=Dq_3+resolution*DEG2RAD(10.0))
 					{
-						JointPos(0)=Dq_0;
-						JointPos(1)=Dq_1;
-						JointPos(2)=Dq_2;
-						JointPos(3)=Dq_3;
-						JointPos(4)=0.0;
-						JointPos(5)=0.0;
-						JointPos(6)=0.0;
-						KUKA[i]->setJoints(JointPos.Array());
-
-
-						for(int j=0;j<6;j++)
+						for (double Dq_4=KUKA[i]->getMin(4);Dq_4<=KUKA[i]->getMax(4);Dq_4=Dq_4+DEG2RAD(120.0))
 						{
-							KUKA[i]->getEndPos(j,Position_each_link[j]);
-						}
-						Position_each_link[0]=(Position_each_link[0]+Position_base_eigen)/2;
-						Position_each_link[2]=(Position_each_link[2]+Position_each_link[1])/2;
-						Position_each_link[4]=(Position_each_link[4]+Position_each_link[3])/2;
-
-						if ((Position_constraint_direction[i][0]*Position_each_link[5](0)<Position_constraint[i][0])
-						  &&(Position_constraint_direction[i][1]*Position_each_link[5](1)<Position_constraint[i][1])
-						  &&(Position_constraint_direction[i][2]*Position_each_link[5](2)<Position_constraint[i][2])
-						  					   )
-						{
-							count=count+1;
-							if (Theta.rows()<=count)
+							for (double Dq_5=KUKA[i]->getMin(5);Dq_5<=KUKA[i]->getMax(5);Dq_5=Dq_5+DEG2RAD(120.0))
 							{
-								Theta.conservativeResize(Theta.rows()+initial_size/10, Theta.cols());
+
+								JointPos(0)=Dq_0;
+								JointPos(1)=Dq_1;
+								JointPos(2)=Dq_2;
+								JointPos(3)=Dq_3;
+								JointPos(4)=Dq_4;
+								JointPos(5)=Dq_5;
+								JointPos(6)=0.0;
+								KUKA[i]->setJoints(JointPos.Array());
+
+
 								for(int j=0;j<6;j++)
 								{
-									Position_each_link_complete[j].conservativeResize(Position_each_link_complete[j].rows()+initial_size/10, Position_each_link_complete[j].cols());
+									KUKA[i]->getEndPos(j,Position_each_link[j]);
+								}
+								KUKA[i]->getEndPos(Position_each_link[5]);
+								Position_each_link[0]=(Position_each_link[0]+Position_base_eigen)/2;
+								Position_each_link[2]=(Position_each_link[2]+Position_each_link[1])/2;
+								Position_each_link[4]=(Position_each_link[4]+Position_each_link[3])/2;
+
+								if ((Position_constraint_direction[i][0]*Position_each_link[5](0)<=Position_constraint[i][0])
+										&&(Position_constraint_direction[i][1]*Position_each_link[5](1)<=Position_constraint[i][1])
+										&&(Position_constraint_direction[i][2]*Position_each_link[5](2)<=Position_constraint[i][2])
+								)
+								{
+									count=count+1;
+									if (Theta.rows()<=count)
+									{
+										Theta.conservativeResize(Theta.rows()+initial_size/10, Theta.cols());
+										for(int j=0;j<6;j++)
+										{
+											Position_each_link_complete[j].conservativeResize(Position_each_link_complete[j].rows()+initial_size/10, Position_each_link_complete[j].cols());
+										}
+
+										KUKA_Position.conservativeResize(KUKA_Position.rows()+initial_size/10, KUKA_Position.cols());
+
+									}
+									for(int j=0;j<7;j++)
+									{
+										Theta(count-1,j)=JointPos(j);
+									}
+									for(int j=0;j<6;j++)
+									{
+										Position_each_link_complete[j].row(count-1)=Position_each_link[j];
+									}
+
+									KUKA_Position.row(count-1)<<Position_each_link_complete[0].row(count-1),Position_each_link_complete[1].row(count-1),Position_each_link_complete[2].row(count-1),
+											Position_each_link_complete[3].row(count-1),Position_each_link_complete[4].row(count-1),Position_each_link_complete[5].row(count-1),Theta.row(count-1);
 								}
 
-								KUKA_Position.conservativeResize(KUKA_Position.rows()+initial_size/10, KUKA_Position.cols());
 
 							}
-							for(int j=0;j<7;j++)
-							{
-								Theta(count-1,j)=JointPos(j);
-							}
-							for(int j=0;j<6;j++)
-							{
-								Position_each_link_complete[j].row(count-1)=Position_each_link[j];
-							}
-
-							KUKA_Position.row(count-1)<<Position_each_link_complete[0].row(count-1),Position_each_link_complete[1].row(count-1),Position_each_link_complete[2].row(count-1),
-									Position_each_link_complete[3].row(count-1),Position_each_link_complete[4].row(count-1),Position_each_link_complete[5].row(count-1),Theta.row(count-1);
 						}
-
-
 					}
-
 				}
 			}
 		}
