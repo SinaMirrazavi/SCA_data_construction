@@ -29,6 +29,7 @@ and the corresponding video here:
 
 1. Open [common.h](https://github.com/sinamr66/SCA_data_construction/blob/master/include/common.h).  and change folder_path to your home folder. 
 2. To change the resolution of sampling and the position of the bases of the robots, open [constructing_data_set.cpp](https://github.com/sinamr66/SCA_data_construction/blob/master/src/constructing_data_set.cpp). 
+3. To modify the kinematic of the robots or change the constraints on the joint workspaces, open  [constructing_data_set.cpp](https://github.com/sinamr66/SCA_data_construction/blob/master/src/constructing_data_set.cpp).
   
 # How to run
 ## 1.Generating SCA data-set
