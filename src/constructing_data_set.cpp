@@ -20,7 +20,7 @@
 
 #include "common.h"
 
-double resolution=3;
+double resolution=1;
 
 
 
