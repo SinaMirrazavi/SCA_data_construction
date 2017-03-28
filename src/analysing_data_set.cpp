@@ -223,7 +223,7 @@ int main(int argc, char** argv)
 									Joint_Robot1_colided(div ((int)ii,(int)Theta2.rows()).rem)=j+1;
 									Joint_Robot2_colided(div ((int)ii,(int)Theta2.rows()).rem)=ii/Theta2.rows()+1;
 								}
-								else if ((result(j,ii)<0.30)&&(result(j,ii)>0.33)&&(Collision(div ((int)ii,(int)Theta2.rows()).rem)==1))
+								else if ((result(j,ii)<0.33)&&(result(j,ii)>0.31)&&(Collision(div ((int)ii,(int)Theta2.rows()).rem)==1))
 								{
 									Collision(div ((int)ii,(int)Theta2.rows()).rem)=0;
 									Joint_Robot1_colided(div ((int)ii,(int)Theta2.rows()).rem)=j+1;

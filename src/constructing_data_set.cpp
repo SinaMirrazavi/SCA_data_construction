@@ -20,7 +20,7 @@
 
 #include "common.h"
 
-double resolution=1;
+double resolution=3;
 
 
 
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
 	Position_constraint_direction[0][0]=0;	Position_constraint_direction[0][1]=-1;	Position_constraint_direction[0][2]=-1;
 	Position_constraint[0][0]=0.1;			Position_constraint[0][1]=1.4;			Position_constraint[0][2]=-0.34-0.144383;
-	Position_base[0][0]=0;					Position_base[0][1]=-1.3;				Position_base[0][2]=0.144383;
+	Position_base[0][0]=0;					Position_base[0][1]=-1.3;				Position_base[0][2]=0.0;
 	if (Num_of_robots>1)
 	{
 		Position_constraint_direction[1][0]=0;	Position_constraint_direction[1][1]=1;	Position_constraint_direction[1][2]=-1;
@@ -154,7 +154,7 @@ int main(int argc, char** argv)
 				{
 					for (double Dq_3=KUKA[i]->getMin(3);Dq_3<=KUKA[i]->getMax(3);Dq_3=Dq_3+resolution*DEG2RAD(10.0))
 					{
-						for (double Dq_4=KUKA[i]->getMin(4);Dq_4<=KUKA[i]->getMax(4);Dq_4=Dq_4+DEG2RAD(120.0))
+						for (double Dq_4=KUKA[i]->getMin(4);Dq_4<=KUKA[i]->getMax(4);Dq_4=Dq_4+DEG2RAD(180.0))
 						{
 							for (double Dq_5=KUKA[i]->getMin(5);Dq_5<=KUKA[i]->getMax(5);Dq_5=Dq_5+DEG2RAD(120.0))
 							{
