@@ -61,7 +61,7 @@ Run
 rosrun  constructing_data_set plot_on_robot
 ``` 
 
-## 2. Constructing model of reachbale space of robot
+## 2. Constructing a model of the reachbale space of a robot
 
 Open [Learning_the_workspaces.cpp](https://github.com/sinamr66/SCA_data_construction/blob/master/src/Learning_the_workspaces.cpp) and edit it accordingly. Then make the package and run 
 
