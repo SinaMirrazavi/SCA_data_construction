@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   skinematics
   sgaussians
   kuka_fri_bridge
+  kdl_parser
 )
 find_package(OpenMP REQUIRED)
 if(OPENMP_FOUND)
@@ -22,7 +23,7 @@ endif()
 
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS system)
-
+find_package(orocos_kdl REQUIRED) 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -149,6 +150,8 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
   add_executable(constructing_data_set src/constructing_data_set.cpp include/constructing_data_set.h include/common.h)
     target_compile_options(constructing_data_set PRIVATE ${OpenMP_FLAGS})
 
+  add_executable(constructing_data_set_KDL src/constructing_data_set_KDL.cpp include/constructing_data_set_KDL.h include/common.h)
+
    add_executable(plot_on_robot src/plot_on_robot.cpp include/plot_on_robot.h)
  #add_executable(Learning_the_workspaces src/Learning_the_workspaces.cpp include/Learning_the_workspaces.h)
 
@@ -166,6 +169,10 @@ FILE(GLOB theheaderFiles include/analysing_data_set.h include/mathlib_eigen_conv
  )
  target_link_libraries(constructing_data_set
    ${catkin_LIBRARIES}  ${OpenMP_FLAGS}
+ )
+
+ target_link_libraries(constructing_data_set_KDL
+   ${catkin_LIBRARIES}  orocos-kdl
  )
 
   target_link_libraries(plot_on_robot

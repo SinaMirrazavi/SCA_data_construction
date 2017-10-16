@@ -60,7 +60,12 @@
   <run_depend> kuka_fri_bridge </run_depend>
   
 
+    <build_depend> kdl_parser </build_depend>
+        <run_depend> kdl_parser </run_depend>
   
+
+  
+
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
