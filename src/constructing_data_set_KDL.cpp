@@ -17,7 +17,7 @@
 
 #include <constructing_data_set_KDL.h>
 
-
+#include <urdf/model.h>
 #include "common.h"
 
 double resolution=1;
@@ -28,6 +28,7 @@ using namespace std;
 using namespace urdf;
 
 
+/*
 bool readJoints(urdf::Model &robot_model,
                                 KDL::Tree &kdl_tree,
                                 std::string &tree_root_name,
@@ -117,6 +118,7 @@ bool readJoints(urdf::Model &robot_model,
   }
   return true;
 }
+ */
 
 void printLink(const SegmentMap::const_iterator& link, const std::string& prefix)
 {
@@ -183,10 +185,19 @@ int main(int argc, char** argv)
 		return false;
 	}
 
+
+	urdf::Model model;
+	if (!model.initFile("valkyrie_sim.urdf")){
+		ROS_ERROR("Failed to parse urdf file");
+		return -1;
+	}
+
+
+
 	fksolver[0] = new ChainFkSolverPos_recursive(chain[0]);
 	fksolver[1] = new ChainFkSolverPos_recursive(chain[1]);
 
-/*	ChainFkSolverPos_recursive fksolver[0](chain[0]);
+	/*	ChainFkSolverPos_recursive fksolver[0](chain[0]);
 	ChainFkSolverPos_recursive fksolver[1](chain[1]);*/
 
 	q[0].resize(chain[0].getNrOfJoints());
@@ -202,25 +213,40 @@ int main(int argc, char** argv)
 	make_space();
 	printChain(chain[1]);
 
+	VectorXd Lower[2]; Lower[0].resize(chain[0].getNrOfJoints());	Lower[1].resize(chain[0].getNrOfJoints());
+	VectorXd Upper[2]; Upper[0].resize(chain[0].getNrOfJoints());	Upper[1].resize(chain[0].getNrOfJoints());
 
-	q[0].data.setZero();
 
-	for (int i=0;i<chain[0].getNrOfJoints();i++)
+
+
+	for (int j=0;j<2;j++)
+	{	q[j].data.setZero();
+	for (int i=0;i<chain[j].getNrOfJoints();i++)
 	{
-		cout<<"i "<<i<<" "<<fksolver[0]->JntToCart(q[0],F_result[0][i],i+1)<<endl;
-		cout<<chain[0].getSegment(i).getName()<<" "<<F_result[0][i].p<<endl;
-		cout<<chain[0].getSegment(i).getJoint().inertia<<endl;
+		cout<<"i "<<i<<" "<<fksolver[j]->JntToCart(q[j],F_result[j][i],i+1)<<endl;
+		cout<<chain[j].getSegment(i).getName()<<" "<<F_result[j][i].p<<endl;
+		cout<<chain[j].getSegment(i).getJoint().getName()<<endl;
+		cout<<"lower"<<model.getJoint(chain[j].getSegment(i).getJoint().getName()).get()->limits.get()->lower<<endl;
+		cout<<"upper"<<model.getJoint(chain[j].getSegment(i).getJoint().getName()).get()->limits.get()->upper<<endl;
+		Lower[j](i)=model.getJoint(chain[j].getSegment(i).getJoint().getName()).get()->limits.get()->lower;
+		Upper[j](i)=model.getJoint(chain[j].getSegment(i).getJoint().getName()).get()->limits.get()->upper;
 	}
+	cout<<"Lower "<<Lower[j]<<endl;
+	cout<<"Upper "<<Upper[j]<<endl;
+
 	for (int i=0;i<3;i++)
 	{
-		Position_each_link[0].data()[i]=F_result[0][0].p.data[i];
-		Position_each_link[1].data()[i]=F_result[0][1].p.data[i];
-		Position_each_link[2].data()[i]=(F_result[0][2].p.data[i]+F_result[0][3].p.data[i])/2;
-		Position_each_link[3].data()[i]=F_result[0][4].p.data[i];
-		Position_each_link[4].data()[i]=(F_result[0][5].p.data[i]+F_result[0][6].p.data[i])/2;
-		Position_each_link[5].data()[i]=F_result[0][6].p.data[i];
-		Position_each_link[6].data()[i]=(F_result[0][7].p.data[i]+F_result[0][8].p.data[i])/2;
+		Position_each_link[0].data()[i]=F_result[j][0].p.data[i];
+		Position_each_link[1].data()[i]=F_result[j][1].p.data[i];
+		Position_each_link[2].data()[i]=(F_result[j][2].p.data[i]+F_result[j][3].p.data[i])/2;
+		Position_each_link[3].data()[i]=F_result[j][4].p.data[i];
+		Position_each_link[4].data()[i]=(F_result[j][5].p.data[i]+F_result[j][6].p.data[i])/2;
+		Position_each_link[5].data()[i]=F_result[j][6].p.data[i];
+		Position_each_link[6].data()[i]=(F_result[j][7].p.data[i]+F_result[j][8].p.data[i])/2;
 	}
+
+	}
+
 
 	for (int i=0;i<chain[0].getNrOfJoints()-1;i++)
 	{
@@ -228,7 +254,7 @@ int main(int argc, char** argv)
 	}
 
 
-/*
+	/*
 
 	q[0](0)=1.57/2;
 	for (int i=0;i<chain[0].getNrOfJoints();i++)
@@ -257,7 +283,7 @@ int main(int argc, char** argv)
 	Position_each_link[4].data()=(F_result[0][5].p.data()+F_result[0][6].p.data())/2;
 	Position_each_link[5].data()=F_result[0][6].p.data();
 	Position_each_link[6].data()=(F_result[0][7].p.data()+F_result[0][8].p.data())/2;
-*/
+	 */
 
 
 
@@ -291,16 +317,16 @@ int main(int argc, char** argv)
 	MatrixXd Position_each_link_complete[6];
 
 
-/*	for (int i=0;i<2;i++)
-	{*/
+	for (int i=0;i<2;i++)
+	{
 
-/*	 * NOTE: The matrices should be N*D, where N is the number of the data points and D is the dimension
-	 *
-	 * 	%% %%%%%%%%%%%%%%%%%%%%%%%%%%
+		/*	 * NOTE: The matrices should be N*D, where N is the number of the data points and D is the dimension
+		 *
+		 * 	%% %%%%%%%%%%%%%%%%%%%%%%%%%%
 			%  Constructing_the_robots 1%
 			%%%%%%%%%%%%%%%%%%%%%%%%%% %%*/
 
-/*		MatrixXd KUKA_Position(initial_size,6*3+7);
+		MatrixXd KUKA_Position(initial_size,6*3+7);
 
 		int count=0;
 
@@ -309,46 +335,57 @@ int main(int argc, char** argv)
 			Position_each_link_complete[ii].resize(initial_size,3);
 			Position_each_link_complete[ii].setZero();
 		}
-		Theta.resize(initial_size,7);Theta.setZero();
+		Theta.resize(initial_size,chain[i].getNrOfJoints());Theta.setZero();
 
-		for (double Dq_0= getMin(0);Dq_0<=KUKA[i]->getMax(0);Dq_0=Dq_0+resolution*DEG2RAD(10.0))
+		for (double Dq_0= Lower[i](0);Dq_0<=Upper[i](0);Dq_0=Dq_0+resolution*DEG2RAD(10.0))
 		{
-			cout<<"Dq_0 "<<Dq_0<<" out_of "<<KUKA[i]->getMax(0)<<" count "<<count<<endl;
-			for (double Dq_1=KUKA[i]->getMin(1);Dq_1<=KUKA[i]->getMax(1);Dq_1=Dq_1+resolution*DEG2RAD(10.0))
+			cout<<"Dq_0 "<<Dq_0<<" out_of "<<Upper[i](0)<<" count "<<count<<endl;
+			for (double Dq_1= Lower[i](1);Dq_1<=Upper[i](1);Dq_1=Dq_1+resolution*DEG2RAD(10.0))
 			{
-				for (double Dq_2=KUKA[i]->getMin(2);Dq_2<=KUKA[i]->getMax(2);Dq_2=Dq_2+resolution*DEG2RAD(10.0))
+				for (double Dq_2= Lower[i](2);Dq_2<=Upper[i](2);Dq_2=Dq_2+resolution*DEG2RAD(10.0))
 				{
-					for (double Dq_3=KUKA[i]->getMin(3);Dq_3<=KUKA[i]->getMax(3);Dq_3=Dq_3+resolution*DEG2RAD(10.0))
+					for (double Dq_3= Lower[i](3);Dq_3<=Upper[i](3);Dq_3=Dq_3+resolution*DEG2RAD(10.0))
 					{
-						for (double Dq_4=KUKA[i]->getMin(4);Dq_4<=KUKA[i]->getMax(4);Dq_4=Dq_4+DEG2RAD(180.0))
+						for (double Dq_4= Lower[i](4);Dq_4<=Upper[i](4);Dq_4=Dq_4+DEG2RAD(180.0))
 						{
-							for (double Dq_5=KUKA[i]->getMin(5);Dq_5<=KUKA[i]->getMax(5);Dq_5=Dq_5+DEG2RAD(120.0))
+							for (double Dq_5= Lower[i](5);Dq_5<=Upper[i](5);Dq_5=Dq_5+DEG2RAD(120.0))
 							{
-
-								JointPos(0)=Dq_0;
-								JointPos(1)=Dq_1;
-								JointPos(2)=Dq_2;
-								JointPos(3)=Dq_3;
-								JointPos(4)=Dq_4;
-								JointPos(5)=Dq_5;
-								JointPos(6)=0.0;
-								KUKA[i]->setJoints(JointPos.Array());
-
-
-								for(int j=0;j<6;j++)
+								for (double Dq_6= Lower[i](6);Dq_6<=Upper[i](6);Dq_5=Dq_6+DEG2RAD(120.0))
 								{
-									KUKA[i]->getEndPos(j,Position_each_link[j]);
-								}
-								KUKA[i]->getEndPos(Position_each_link[5]);
-								Position_each_link[0]=(Position_each_link[0]+Position_base_eigen)/2;
-								Position_each_link[2]=(Position_each_link[2]+Position_each_link[1])/2;
-								Position_each_link[4]=(Position_each_link[4]+Position_each_link[3])/2;
 
-								if ((Position_constraint_direction[i][0]*Position_each_link[5](0)<=Position_constraint[i][0])
+									q[i].data[0]=Dq_0;
+									q[i].data[1]=Dq_1;
+									q[i].data[2]=Dq_2;
+									q[i].data[3]=Dq_3;
+									q[i].data[4]=Dq_4;
+									q[i].data[5]=Dq_5;
+									q[i].data[6]=Dq_6;
+
+
+									cout<<"1 "<<endl;
+									for (int j=0;j<chain[i].getNrOfJoints();j++)
+									{
+										fksolver[i]->JntToCart(q[i],F_result[i][j],j+1);
+									}
+									cout<<"11 "<<endl;
+									for (int ii=0;ii<3;ii++)
+									{
+										Position_each_link[0].data()[ii]=F_result[i][0].p.data[ii];
+										Position_each_link[1].data()[ii]=F_result[i][1].p.data[ii];
+										Position_each_link[2].data()[ii]=(F_result[i][2].p.data[ii]+F_result[i][3].p.data[ii])/2;
+										Position_each_link[3].data()[ii]=F_result[i][4].p.data[ii];
+										Position_each_link[4].data()[ii]=(F_result[i][5].p.data[ii]+F_result[i][6].p.data[ii])/2;
+										Position_each_link[5].data()[ii]=F_result[i][6].p.data[ii];
+										Position_each_link[6].data()[ii]=(F_result[i][7].p.data[ii]+F_result[i][8].p.data[ii])/2;
+									}
+									cout<<"2 "<<endl;
+
+									/*								if ((Position_constraint_direction[i][0]*Position_each_link[5](0)<=Position_constraint[i][0])
 										&&(Position_constraint_direction[i][1]*Position_each_link[5](1)<=Position_constraint[i][1])
 										&&(Position_constraint_direction[i][2]*Position_each_link[5](2)<=Position_constraint[i][2])
 								)
-								{
+								{*/
+									cout<<"3 "<<endl;
 									count=count+1;
 									if (Theta.rows()<=count)
 									{
@@ -361,20 +398,21 @@ int main(int argc, char** argv)
 										KUKA_Position.conservativeResize(KUKA_Position.rows()+initial_size/10, KUKA_Position.cols());
 
 									}
+									cout<<"4 "<<endl;
 									for(int j=0;j<7;j++)
 									{
-										Theta(count-1,j)=JointPos(j);
+										Theta(count-1,j)=q[i].data[j];
 									}
-									for(int j=0;j<6;j++)
+									for(int j=0;j<7;j++)
 									{
 										Position_each_link_complete[j].row(count-1)=Position_each_link[j];
 									}
-
+									cout<<"5 "<<endl;
 									KUKA_Position.row(count-1)<<Position_each_link_complete[0].row(count-1),Position_each_link_complete[1].row(count-1),Position_each_link_complete[2].row(count-1),
 											Position_each_link_complete[3].row(count-1),Position_each_link_complete[4].row(count-1),Position_each_link_complete[5].row(count-1),Theta.row(count-1);
+									//	}
+
 								}
-
-
 							}
 						}
 					}
@@ -402,7 +440,7 @@ int main(int argc, char** argv)
 			file.open(buffer_path.c_str());	cout<<"Position "<<i<<" "<<j<<endl;	file<<Position_each_link_complete[j]<<endl; file.close();
 		}
 
-	}*/
+	}
 
 	return 0;
 }
