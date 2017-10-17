@@ -20,10 +20,10 @@
 
 #include "common.h"
 
-const char *Collision_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/datacolision.txt";
+const char *Collision_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/valkyrian/src/learning_workspace_valkyrie/SCA_data_construction/data/datacolision.txt";
 
-const char *Theta1_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Theta0.txt";
-const char *Theta2_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/underlay/src/Data_Analysis/constructing_data_set/data/Theta1.txt";
+const char *Theta1_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/valkyrian/src/learning_workspace_valkyrie/SCA_data_construction/data/Theta0.txt";
+const char *Theta2_path="/home/sina/Dropbox/Sinas_stuff/catkin_ws/valkyrian/src/learning_workspace_valkyrie/SCA_data_construction/data/Theta1.txt";
  
 
 bool Save_complete_data_set=false;
@@ -41,7 +41,15 @@ MatrixXd Pairwisedistance(MatrixXd A, MatrixXd B)
 		{
 			for (int j=0;j<B.rows();j++)
 			{
-				result(i,j)=(A.block(i,0,1,A.cols()).transpose()-B.block(j,0,1,B.cols()).transpose()).norm();
+				if ((i==0))
+				{
+					result(i,j)=10;
+				}
+				else
+				{
+					result(i,j)=(A.block(i,0,1,A.cols()).transpose()-B.block(j,0,1,B.cols()).transpose()).norm();
+				}
+
 			}
 		}
 	}
@@ -68,10 +76,10 @@ int main(int argc, char** argv)
 			%  Loading the Data points	%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%			*/
 
-	MathLib::Matrix Position_RTK[Num_of_robots][6];
+	MathLib::Matrix Position_RTK[Num_of_robots][7];
 	MathLib::Matrix Theta_RTK[Num_of_robots];
 
-	MatrixXd Position_each_link[Num_of_robots][6];
+	MatrixXd Position_each_link[Num_of_robots][7];
 	MatrixXd Theta[Num_of_robots];
 	MatrixXd Position[Num_of_robots];
 	int dimesion_row=0;
@@ -82,7 +90,7 @@ int main(int argc, char** argv)
 	{
 		dimesion_row=0;
 		dimesion_cols=0;
-		for (int j=0;j<6;j++)
+		for (int j=0;j<7;j++)
 		{
 			buffer_path=addTwochar(folder_path,"/Position",i,j);
 			Position_RTK[i][j].Load(buffer_path.c_str());
@@ -101,7 +109,7 @@ int main(int argc, char** argv)
 		Position[i].resize(dimesion_row,dimesion_cols);Position[i].setZero();
 		dimesion_row=0;
 		dimesion_cols=0;
-		for (int j=0;j<6;j++)
+		for (int j=0;j<7;j++)
 		{
 			Position[i].block(dimesion_row,0,Position_each_link[i][j].rows(),Position_each_link[i][j].cols())=Position_each_link[i][j];
 			dimesion_row=dimesion_row+Position_each_link[i][j].rows();
@@ -122,7 +130,7 @@ int main(int argc, char** argv)
 	VectorXd Collision;
 	VectorXd Joint_Robot1_colided;
 	VectorXd Joint_Robot2_colided;
-	MatrixXd query_pt_eigen(6,3);
+	MatrixXd query_pt_eigen(7,3);
 	MatrixXd result;
 
 	MatrixXd Debug_position1_colided;
@@ -171,11 +179,11 @@ int main(int argc, char** argv)
 			Joint_Robot1_colided.resize(Theta2.rows());												Joint_Robot2_colided.setZero();
 			Joint_Robot2_colided.resize(Theta2.rows());												Joint_Robot2_colided.setZero();
 			query_pt_eigen.setZero();
-			result.resize(6,Position2.rows());														result.setZero();
-			Debug_position1_colided.resize(Theta2.rows()*Theta1.rows()/10,6*3);						Debug_position1_colided.setZero();
-			Debug_position2_colided.resize(Theta2.rows()*Theta1.rows()/10,6*3);						Debug_position2_colided.setZero();
-			Debug_position1_neighbour.resize(Theta2.rows()*Theta1.rows()/10,6*3);					Debug_position1_neighbour.setZero();
-			Debug_position2_neighbour.resize(Theta2.rows()*Theta1.rows()/10,6*3);					Debug_position2_neighbour.setZero();
+			result.resize(7,Position2.rows());														result.setZero();
+			Debug_position1_colided.resize(Theta2.rows()*Theta1.rows()/10,7*3);						Debug_position1_colided.setZero();
+			Debug_position2_colided.resize(Theta2.rows()*Theta1.rows()/10,7*3);						Debug_position2_colided.setZero();
+			Debug_position1_neighbour.resize(Theta2.rows()*Theta1.rows()/10,7*3);					Debug_position1_neighbour.setZero();
+			Debug_position2_neighbour.resize(Theta2.rows()*Theta1.rows()/10,7*3);					Debug_position2_neighbour.setZero();
 
 			dummy_dimention=Position1.cols();
 			N_colisions=0;
@@ -189,6 +197,7 @@ int main(int argc, char** argv)
 
 			cout<<" Fidning_The_Collisions"<<endl;
 			for (int i=0; i<Theta1.rows();i++)
+//			for (int i=0; i<1;i++)
 			{
 				if (ros::ok())
 				{
@@ -206,10 +215,14 @@ int main(int argc, char** argv)
 						query_pt_eigen(3,j)=Position_each_link[o][3](joint_Robot1,j);
 						query_pt_eigen(4,j)=Position_each_link[o][4](joint_Robot1,j);
 						query_pt_eigen(5,j)=Position_each_link[o][5](joint_Robot1,j);
+						query_pt_eigen(6,j)=Position_each_link[o][6](joint_Robot1,j);
 
 					}
 					result=Pairwisedistance(query_pt_eigen,Position2);
 
+	//				cout<<"Position2 "<<Position2<<endl;
+	//				cout<<"query_pt_eigen "<<query_pt_eigen<<endl;
+	//				cout<<"result "<<result<<endl;
 #pragma omp parallel num_threads(8)
 					{
 #pragma omp for
@@ -223,7 +236,7 @@ int main(int argc, char** argv)
 									Joint_Robot1_colided(div ((int)ii,(int)Theta2.rows()).rem)=j+1;
 									Joint_Robot2_colided(div ((int)ii,(int)Theta2.rows()).rem)=ii/Theta2.rows()+1;
 								}
-								else if ((result(j,ii)<0.33)&&(result(j,ii)>0.30)&&(Collision(div ((int)ii,(int)Theta2.rows()).rem)==1))
+								else if ((result(j,ii)<0.28)&&(result(j,ii)>0.25)&&(Collision(div ((int)ii,(int)Theta2.rows()).rem)==1))
 								{
 									Collision(div ((int)ii,(int)Theta2.rows()).rem)=0;
 									Joint_Robot1_colided(div ((int)ii,(int)Theta2.rows()).rem)=j+1;
@@ -232,6 +245,7 @@ int main(int argc, char** argv)
 							}
 						}
 					}
+
 
 					for (int j=0; j<Theta2.rows();j++)
 					{
@@ -265,10 +279,9 @@ int main(int argc, char** argv)
 								Complete_Collision(N_colisions-1,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
 							}
 							Debug_position1_colided.row(N_colisions-1)<<Position_each_link[o][0].row(joint_Robot1),Position_each_link[o][1].row(joint_Robot1),Position_each_link[o][2].row(joint_Robot1),
-									Position_each_link[o][3].row(joint_Robot1),Position_each_link[o][4].row(joint_Robot1),Position_each_link[o][5].row(joint_Robot1);
+									Position_each_link[o][3].row(joint_Robot1),Position_each_link[o][4].row(joint_Robot1),Position_each_link[o][5].row(joint_Robot1),Position_each_link[o][6].row(joint_Robot1);
 							Debug_position2_colided.row(N_colisions-1)<<Position_each_link[oo][0].row(joint_Robot2),Position_each_link[oo][1].row(joint_Robot2),Position_each_link[oo][2].row(joint_Robot2),
-									Position_each_link[oo][3].row(joint_Robot2),Position_each_link[oo][4].row(joint_Robot2),Position_each_link[oo][5].row(joint_Robot2);
-
+									Position_each_link[oo][3].row(joint_Robot2),Position_each_link[oo][4].row(joint_Robot2),Position_each_link[oo][5].row(joint_Robot2),Position_each_link[oo][6].row(joint_Robot2);
 						}
 						else if (Collision(j)==0)
 						{
@@ -288,9 +301,9 @@ int main(int argc, char** argv)
 								Complete_Neighbour(N_neighbour_colisions-1,3+Theta1.cols()+ii)=Theta2(joint_Robot2,ii);
 							}
 							Debug_position1_neighbour.row(N_neighbour_colisions-1)<<Position_each_link[o][0].row(joint_Robot1),Position_each_link[o][1].row(joint_Robot1),Position_each_link[o][2].row(joint_Robot1),
-									Position_each_link[o][3].row(joint_Robot1),Position_each_link[o][4].row(joint_Robot1),Position_each_link[o][5].row(joint_Robot1);
+									Position_each_link[o][3].row(joint_Robot1),Position_each_link[o][4].row(joint_Robot1),Position_each_link[o][5].row(joint_Robot1),Position_each_link[o][6].row(joint_Robot1);
 							Debug_position2_neighbour.row(N_neighbour_colisions-1)<<Position_each_link[oo][0].row(joint_Robot2),Position_each_link[oo][1].row(joint_Robot2),Position_each_link[oo][2].row(joint_Robot2),
-									Position_each_link[oo][3].row(joint_Robot2),Position_each_link[oo][4].row(joint_Robot2),Position_each_link[oo][5].row(joint_Robot2);
+									Position_each_link[oo][3].row(joint_Robot2),Position_each_link[oo][4].row(joint_Robot2),Position_each_link[oo][5].row(joint_Robot2),Position_each_link[oo][6].row(joint_Robot2);
 						}
 					}
 				}// if (ros::ok())
