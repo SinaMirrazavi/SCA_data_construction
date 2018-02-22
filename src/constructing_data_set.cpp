@@ -20,8 +20,7 @@
 
 #include "common.h"
 
-double resolution=1;
-
+double resolution = 3;
 
 
 
@@ -49,8 +48,8 @@ int main(int argc, char** argv)
 
 
 	Position_constraint_direction[0][0]=0;	Position_constraint_direction[0][1]=-1;	Position_constraint_direction[0][2]=-1;
-	Position_constraint[0][0]=0.1;			Position_constraint[0][1]=1.4;			Position_constraint[0][2]=-0.34-0.144383;
-	Position_base[0][0]=0;					Position_base[0][1]=-1.3;				Position_base[0][2]=0.0;
+	Position_constraint[0][0]=0.1;			Position_constraint[0][1]=1.4;			Position_constraint[0][2]=-0.34+0.06;
+	Position_base[0][0]=0;					Position_base[0][1]=-1.33;				Position_base[0][2]=-0.06;
 	if (Num_of_robots>1)
 	{
 		Position_constraint_direction[1][0]=0;	Position_constraint_direction[1][1]=1;	Position_constraint_direction[1][2]=-1;
@@ -145,7 +144,7 @@ int main(int argc, char** argv)
 		}
 		Theta.resize(initial_size,7);Theta.setZero();
 
-		for (double Dq_0=KUKA[i]->getMin(0);Dq_0<=KUKA[i]->getMax(0);Dq_0=Dq_0+resolution*DEG2RAD(10.0))
+	for (double Dq_0=KUKA[i]->getMin(0);Dq_0<=KUKA[i]->getMax(0);Dq_0=Dq_0+resolution*DEG2RAD(10.0))
 		{
 			cout<<"Dq_0 "<<Dq_0<<" out_of "<<KUKA[i]->getMax(0)<<" count "<<count<<endl;
 			for (double Dq_1=KUKA[i]->getMin(1);Dq_1<=KUKA[i]->getMax(1);Dq_1=Dq_1+resolution*DEG2RAD(10.0))
@@ -215,6 +214,7 @@ int main(int argc, char** argv)
 				}
 			}
 		}
+
 
 		Theta.conservativeResize(count, Theta.cols());
 		for(int j=0;j<6;j++)
