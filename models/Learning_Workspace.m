@@ -35,7 +35,7 @@ GMModels = cell(1,Max_num_GMM);
 
 for i=1:Max_num_GMM
     GMModels{i} = fitgmdist(KUKA_Position,i,'RegularizationValue',0.001,'Replicates',5,'Options',options);
-    Log(i)= GMModels{i}.NegativeLoglikelihood;
+    BIC(i)= GMModels{i}.BIC;
 end
 
 [minBIC,numComponents] = min(BIC);
