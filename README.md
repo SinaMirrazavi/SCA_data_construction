@@ -72,5 +72,14 @@ rosrun  constructing_data_set Learning_the_workspaces
 ```  
 
 Open Matlab and run [Learning_Workspace.m](https://github.com/sinamr66/SCA_data_construction/blob/master/models/Learning_Workspace.m)
+## Copyright
+Please cite these papers if you are using this toolbox:
+@article{mirrazavi2018unified,
+  title={A unified framework for coordinated multi-arm motion planning},
+  author={Mirrazavi Salehian, Seyed Sina and Figueroa, Nadia and Billard, Aude},
+  journal={The International Journal of Robotics Research},
+  pages={0278364918765952},
+  publisher={SAGE Publications Sage UK: London, England}
+}
 
 For more information contact Sina Mirrazavi.
